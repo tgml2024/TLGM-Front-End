@@ -1,0 +1,12 @@
+@media (max-width: 640px) {
+  .sidebar-toggle {
+    top: 10px;
+    left: 10px;
+    z-index: 50;
+    position: absolute;
+  }
+
+  .main-content {
+    padding-top: 60px; /* เว้นที่สำหรับปุ่ม Mobile Menu */
+  }
+}

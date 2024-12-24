@@ -1,0 +1,74 @@
+name: 🚀 TLGM Deploy - Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  FTP-Deploy-Action:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the latest code from main branch
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js 20.17.0 environment
+      - name: 📦 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.17.0'
+          cache: 'npm'
+
+      # Step 3: Cache dependencies
+      - name: 📁 Cache npm dependencies
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            **/node_modules
+            .next/cache
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 4: Install dependencies
+      - name: 🔨 Install Dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          echo "Installing dependencies..."
+          npm ci --no-audit --no-fund --prefer-offline --progress=false
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+          CI: true
+
+      # Step 5: Create .env file from GitHub Secrets
+      - name: 📄 Create .env.production file
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env.production
+
+      # Step 6: Build the Next.js project
+      - name: 🏗 Build Project
+        run: |
+          echo "Building project..."
+          npm run build
+
+      # Step 7: Deploy files to the server using FTP
+      - name: 📂 Sync all folders and files to the server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: .next/
+          server-dir: /dev-tlgm-webside.xyz/.next/
+          dry-run: false
+          exclude: |
+            **/*.DS_Store
+            **/node_modules
+            **/README.md
+            **/.git*
+            **/.github/
+          log-level: verbose

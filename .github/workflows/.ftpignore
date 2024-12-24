@@ -1,0 +1,13 @@
+# Ignore node modules and system files
+node_modules/
+.git/
+.env
+*.log
+.husky
+.vscode
+.eslintignore
+.eslintrc
+bun.lockb
+next-env.d.ts
+tsconfig.json
+tsconfig.tsbuildinfo
