@@ -5,6 +5,12 @@ const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 export interface ForwardingStatus {
   status: number;
   userId: string;
+  forward_interval: number | null;
+  clientInfo?: {
+    createdAt: string;
+    lastUsed: string;
+    uptime: number;
+  };
 }
 
 // เพิ่ม interface สำหรับ response
