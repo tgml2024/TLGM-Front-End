@@ -18,6 +18,9 @@ const UserMainPage = () => {
       {profileData && (
         <div>
           <h1 className="text-4xl font-bold text-center mb-6">Welcome</h1>
+          <p className="text-lg text-center mb-6">
+            {profileData.user.username}
+          </p>
         </div>
       )}
     </div>

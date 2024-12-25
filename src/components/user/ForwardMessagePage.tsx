@@ -23,13 +23,18 @@ interface ForwardingState {
   status: 'IDLE' | 'RUNNING';
   messages: any[];
   error: string | null;
+  clientInfo?: {
+    createdAt: string;
+    lastUsed: string;
+    uptime: number;
+  };
+  forward_interval?: number | null;
 }
 
 const ForwardMessage: React.FC = () => {
   // State Management
   const [sourceGroup, setSourceGroup] = useState<SendingGroup | null>(null);
   const [destinationGroups, setDestinationGroups] = useState<ResiveGroup[]>([]);
-  const [interval, setInterval] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(true);
   const [forwardingState, setForwardingState] = useState<ForwardingState>({
     status: 'IDLE',
@@ -41,7 +46,7 @@ const ForwardMessage: React.FC = () => {
     text: string;
     date: Date;
   } | null>(null);
-  const [inputValue, setInputValue] = useState<string>('1');
+  const [inputValue, setInputValue] = useState<string>('10');
   const [intervalError, setIntervalError] = useState<string>('');
 
   // 1. Initialize client
@@ -56,7 +61,22 @@ const ForwardMessage: React.FC = () => {
         const forwardingStatus = await getForwardingStatus(userId);
         const initialStatus =
           forwardingStatus.status === 1 ? 'RUNNING' : 'IDLE';
-        setForwardingState((prev) => ({ ...prev, status: initialStatus }));
+
+        // Update state with all the new information
+        setForwardingState((prev) => ({
+          ...prev,
+          status: initialStatus,
+          clientInfo: forwardingStatus.clientInfo,
+          forward_interval: forwardingStatus.forward_interval,
+        }));
+
+        // Set the input value from the forwarding status
+        setInputValue(
+          !forwardingStatus.forward_interval ||
+            forwardingStatus.forward_interval === 0
+            ? '10'
+            : forwardingStatus.forward_interval.toString()
+        );
 
         // เริ่มต้นเชื่อมต่อ Telegram Client
         await initializeForwarding(userId);
@@ -119,22 +139,18 @@ const ForwardMessage: React.FC = () => {
       setIsLoading(true);
       const profile = await getUserProfile();
 
-      // // Log values before making API call
-      // console.log('Starting forward with params:', {
-      //   userId: profile.user.userid.toString(),
-      //   sourceChatId: sourceGroup?.sg_tid,
-      //   destinationChatIds: destinationGroups.map((group) => group.rg_tid),
-      //   interval,
-      // });
-
       await beginForwarding({
         userId: profile.user.userid.toString(),
         sourceChatId: sourceGroup!.sg_tid!,
         destinationChatIds: destinationGroups.map((group) => group.rg_tid!),
-        interval,
+        interval: Number(inputValue),
       });
 
-      setForwardingState((prev) => ({ ...prev, status: 'RUNNING' }));
+      setForwardingState((prev) => ({
+        ...prev,
+        status: 'RUNNING',
+        forward_interval: Number(inputValue),
+      }));
       toast.success('เริ่มการส่งต่อข้อความอัตโนมัติแล้ว');
     } catch (error) {
       setForwardingState((prev) => ({
@@ -298,7 +314,6 @@ const ForwardMessage: React.FC = () => {
 
                   // ถ้าผ่านการตรวจสอบทั้งหมด
                   setIntervalError('');
-                  setInterval(Number(value));
                 }}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 disabled={forwardingState.status === 'RUNNING'}
