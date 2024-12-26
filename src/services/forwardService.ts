@@ -46,6 +46,10 @@ export interface ForwardingStatusResponse extends BaseResponse {
   };
 }
 
+interface ActiveForwardersResponse extends BaseResponse {
+  activeForwarders: number;
+}
+
 // Request interfaces
 interface BeginForwardingRequest {
   userId: number;
@@ -108,3 +112,9 @@ export const checkForwardingStatus = async (
   );
   return response.data;
 };
+
+export const getActiveForwarders =
+  async (): Promise<ActiveForwardersResponse> => {
+    const response = await axios.get(`${API_URL}/api/v1/get-active-forwarders`);
+    return response.data;
+  };
