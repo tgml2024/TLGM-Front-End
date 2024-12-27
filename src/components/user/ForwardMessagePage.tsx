@@ -5,7 +5,6 @@ import { MdForward } from 'react-icons/md';
 import {
   beginForwarding,
   checkForwardingStatus,
-  getForwardingStatus,
   initializeForwarding,
   stopContinuousForward,
 } from '@/services/forwardService';
@@ -55,36 +54,35 @@ const ForwardMessage: React.FC = () => {
       try {
         setIsLoading(true);
         const profile = await getUserProfile();
-        const userId = profile.user.userid.toString();
+        const userId = Number(profile.user.userid);
 
-        // Get initial forwarding status from DB
-        const forwardingStatus = await getForwardingStatus(userId);
+        // Initialize client
+        await initializeForwarding(userId);
+
+        // Check status
+        const forwardingStatus = await checkForwardingStatus(userId);
         const initialStatus =
-          forwardingStatus.status === 1 ? 'RUNNING' : 'IDLE';
+          forwardingStatus.currentForward.status === 1 ? 'RUNNING' : 'IDLE';
 
-        // Update state with all the new information
         setForwardingState((prev) => ({
           ...prev,
           status: initialStatus,
           clientInfo: forwardingStatus.clientInfo,
-          forward_interval: forwardingStatus.forward_interval,
+          forward_interval: forwardingStatus.currentForward.forward_interval,
         }));
 
-        // Set the input value from the forwarding status
         setInputValue(
-          !forwardingStatus.forward_interval ||
-            forwardingStatus.forward_interval === 0
-            ? '10'
-            : forwardingStatus.forward_interval.toString()
+          forwardingStatus.currentForward.forward_interval?.toString() || '10'
         );
 
-        // เริ่มต้นเชื่อมต่อ Telegram Client
-        await initializeForwarding(userId);
+        if (forwardingStatus.messageInfo) {
+          setLastMessage(forwardingStatus.messageInfo);
+        }
 
-        // ดึงข้อมูลกลุ่ม
+        // Fetch groups
         const [sendingGroups, resiveGroups] = await Promise.all([
-          getSandingGroupsFromDatabase(userId),
-          getGroupsFromDatabase(userId),
+          getSandingGroupsFromDatabase(userId.toString()),
+          getGroupsFromDatabase(userId.toString()),
         ]);
 
         if (sendingGroups.length > 0) {
@@ -140,10 +138,10 @@ const ForwardMessage: React.FC = () => {
       const profile = await getUserProfile();
 
       await beginForwarding({
-        userId: profile.user.userid.toString(),
+        userId: Number(profile.user.userid),
         sourceChatId: sourceGroup!.sg_tid!,
         destinationChatIds: destinationGroups.map((group) => group.rg_tid!),
-        interval: Number(inputValue),
+        forward_interval: Number(inputValue),
       });
 
       setForwardingState((prev) => ({
@@ -168,7 +166,7 @@ const ForwardMessage: React.FC = () => {
     try {
       setIsLoading(true);
       const profile = await getUserProfile();
-      await stopContinuousForward(profile.user.userid.toString());
+      await stopContinuousForward(Number(profile.user.userid));
 
       // รีเซ็ตสถานะกลับไปที่ IDLE และล้างข้อความล่าสุด
       setForwardingState((prev) => ({
@@ -209,15 +207,13 @@ const ForwardMessage: React.FC = () => {
     const checkStatus = async () => {
       try {
         const profile = await getUserProfile();
-        const status = await checkForwardingStatus(
-          profile.user.userid.toString()
-        );
+        const status = await checkForwardingStatus(Number(profile.user.userid));
 
-        if (!status.isActive) {
+        if (!status.currentForward.status) {
           setForwardingState((prev) => ({ ...prev, status: 'IDLE' }));
         }
-        if (status.lastMessage) {
-          setLastMessage(status.lastMessage);
+        if (status.messageInfo) {
+          setLastMessage(status.messageInfo);
         }
       } catch (error) {
         toast.error('Error checking status:', error);

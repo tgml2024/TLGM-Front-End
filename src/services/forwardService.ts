@@ -2,95 +2,138 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 
-export interface ForwardingStatus {
-  status: number;
-  userId: string;
-  forward_interval: number | null;
-  clientInfo?: {
-    createdAt: string;
-    lastUsed: string;
-    uptime: number;
+// Response interfaces
+interface BaseResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  details?: string;
+}
+
+interface InitializeResponse extends BaseResponse {
+  message: string;
+}
+
+interface BeginForwardingResponse extends BaseResponse {
+  settings?: {
+    forward_interval: number;
+    initialMessageCount: number;
   };
 }
 
-// เพิ่ม interface สำหรับ response
-export interface ForwardingStatusCheck {
-  isActive: boolean;
-  messageCount: number;
-  isClientConnected: boolean;
-  lastMessage?: {
+interface StopForwardingResponse extends BaseResponse {
+  message: string;
+}
+
+export interface ForwardingStatusResponse extends BaseResponse {
+  status: number;
+  currentForward: {
+    status: number;
+    forward_interval: number;
+    created_at?: string;
+    last_updated?: string;
+  };
+  messageInfo?: {
     messageId: string;
     text: string;
     date: Date;
   };
+  clientInfo?: {
+    createdAt: string;
+    lastUsed: string;
+    uptime: number;
+    isConnected: boolean;
+  };
 }
 
-// เพิ่มฟังก์ชัน checkForwardingStatus
-export const checkForwardingStatus = async (
-  userId: string
-): Promise<ForwardingStatusCheck> => {
-  const response = await axios.post(
-    `${API_URL}/api/v1/check-forwarding-status`,
-    {
-      userId,
-    }
+interface DashboardAdminResponse extends BaseResponse {
+  data: {
+    daily: {
+      forwards: Array<{
+        date: string; // Format: 'YYYY-MM-DD'
+        total_forwards: number;
+      }>;
+      details: Array<{
+        date: string; // Format: 'YYYY-MM-DD'
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    weekly: {
+      forwards: Array<{
+        week: string; // Format: 'YYYYWW' or similar
+        total_forwards: number;
+      }>;
+      details: Array<{
+        week: string; // Format: 'YYYYWW' or similar
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    monthly: {
+      forwards: Array<{
+        month: string; // Format: 'YYYY-MM'
+        total_forwards: number;
+      }>;
+      details: Array<{
+        month: string; // Format: 'YYYY-MM'
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    yearly: {
+      forwards: Array<{
+        year: number; // Format: YYYY
+        total_forwards: number;
+      }>;
+      details: Array<{
+        year: number; // Format: YYYY
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+  };
+}
+
+interface ActiveForwardersResponse extends BaseResponse {
+  activeForwarders: number;
+}
+
+// Request interfaces
+interface BeginForwardingRequest {
+  userId: number;
+  sourceChatId: string;
+  destinationChatIds: string[];
+  forward_interval?: number;
+}
+
+// Service functions
+export const initializeForwarding = async (
+  userId: number
+): Promise<InitializeResponse> => {
+  const response = await axios.post<InitializeResponse>(
+    `${API_URL}/api/v1/initialize`,
+    { userId }
   );
   return response.data;
 };
-
-export const initializeForwarding = async (userId: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/v1/initialize`, { userId });
-};
-
-export const startContinuousForward = async (
-  userId: string,
-  sourceChatId: string,
-  destinationChatIds: string[]
-): Promise<ForwardingStatus> => {
-  const response = await axios.post(
-    `${API_URL}/api/v1/start-continuous-forward`,
-    {
-      userId,
-      sourceChatId,
-      destinationChatIds,
-    }
-  );
-  return response.data;
-};
-
-// ปรับปรุง interface สำหรับ request payload
-export interface BeginForwardingRequest {
-  userId: string | number;
-  sourceChatId: string | number;
-  destinationChatIds: (string | number)[];
-  interval?: number;
-}
 
 export const beginForwarding = async (
   data: BeginForwardingRequest
-): Promise<void> => {
+): Promise<BeginForwardingResponse> => {
   try {
-    // First, ensure client is initialized
-    await initializeForwarding(data.userId.toString());
-
-    // Proceed with forwarding
-    const response = await axios.post(`${API_URL}/api/v1/begin-forwarding`, {
-      userId: data.userId,
-      sourceChatId: data.sourceChatId,
-      destinationChatIds: Array.isArray(data.destinationChatIds)
-        ? data.destinationChatIds
-        : [data.destinationChatIds],
-      interval: data.interval || 5,
-    });
-
+    const response = await axios.post<BeginForwardingResponse>(
+      `${API_URL}/api/v1/begin-forwarding`,
+      {
+        userId: data.userId,
+        sourceChatId: data.sourceChatId,
+        destinationChatIds: data.destinationChatIds,
+        forward_interval: data.forward_interval || 5,
+      }
+    );
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Begin forwarding failed:', {
-        status: error.response?.status,
-        message: error.response?.data?.error || error.message,
-        data: error.response?.data,
-      });
       throw new Error(
         error.response?.data?.error || 'Failed to begin forwarding'
       );
@@ -99,15 +142,33 @@ export const beginForwarding = async (
   }
 };
 
-export const stopContinuousForward = async (userId: string): Promise<void> => {
-  await axios.post(`${API_URL}/api/v1/stop-continuous-forward`, { userId });
+export const stopContinuousForward = async (
+  userId: number
+): Promise<StopForwardingResponse> => {
+  const response = await axios.post<StopForwardingResponse>(
+    `${API_URL}/api/v1/stop-continuous-forward`,
+    { userId }
+  );
+  return response.data;
 };
 
-export const getForwardingStatus = async (
-  userId: string
-): Promise<ForwardingStatus> => {
-  const response = await axios.post(`${API_URL}/api/v1/get-forwarding-status`, {
-    userId,
-  });
+export const checkForwardingStatus = async (
+  userId: number
+): Promise<ForwardingStatusResponse> => {
+  const response = await axios.post<ForwardingStatusResponse>(
+    `${API_URL}/api/v1/check-forwarding-status`,
+    { userId }
+  );
+  return response.data;
+};
+
+export const getActiveForwarders =
+  async (): Promise<ActiveForwardersResponse> => {
+    const response = await axios.get(`${API_URL}/api/v1/get-active-forwarders`);
+    return response.data;
+  };
+
+export const dashboardAdmin = async (): Promise<DashboardAdminResponse> => {
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-admin`);
   return response.data;
 };
