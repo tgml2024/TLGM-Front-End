@@ -34,12 +34,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # Step 4: Install dependencies
+      # Step 4: Install dependencies (with cache fallback)
       - name: 🔨 Install Dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          echo "Installing dependencies..."
-          npm ci --no-audit --no-fund --prefer-offline --progress=false
+          if [ -d "node_modules" ]; then
+            echo "Using cached dependencies"
+          else
+            echo "Cache is missing or outdated. Installing dependencies..."
+            npm ci --no-audit --no-fund --prefer-offline --progress=false
+          fi
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
           CI: true
