@@ -37,16 +37,13 @@ jobs:
       # Step 4: Install dependencies (with cache fallback)
       - name: 🔨 Install Dependencies
         run: |
-          if [ -d "node_modules" ]; then
-            echo "Using cached dependencies"
-          else
-            echo "Cache is missing or outdated. Installing dependencies..."
+            echo "Clearing node_modules and reinstalling..."
+            r m -rf node_modules
             npm ci --no-audit --no-fund --prefer-offline --progress=false
-          fi
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
           CI: true
-
+        
       # Step 5: Create .env file from GitHub Secrets
       - name: 📄 Create .env.production file
         run: |
