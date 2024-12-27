@@ -46,6 +46,55 @@ export interface ForwardingStatusResponse extends BaseResponse {
   };
 }
 
+interface DashboardAdminResponse extends BaseResponse {
+  data: {
+    daily: {
+      forwards: Array<{
+        date: string; // Format: 'YYYY-MM-DD'
+        total_forwards: number;
+      }>;
+      details: Array<{
+        date: string; // Format: 'YYYY-MM-DD'
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    weekly: {
+      forwards: Array<{
+        week: string; // Format: 'YYYYWW' or similar
+        total_forwards: number;
+      }>;
+      details: Array<{
+        week: string; // Format: 'YYYYWW' or similar
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    monthly: {
+      forwards: Array<{
+        month: string; // Format: 'YYYY-MM'
+        total_forwards: number;
+      }>;
+      details: Array<{
+        month: string; // Format: 'YYYY-MM'
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+    yearly: {
+      forwards: Array<{
+        year: number; // Format: YYYY
+        total_forwards: number;
+      }>;
+      details: Array<{
+        year: number; // Format: YYYY
+        total_success: number;
+        total_fail: number;
+      }>;
+    };
+  };
+}
+
 interface ActiveForwardersResponse extends BaseResponse {
   activeForwarders: number;
 }
@@ -118,3 +167,8 @@ export const getActiveForwarders =
     const response = await axios.get(`${API_URL}/api/v1/get-active-forwarders`);
     return response.data;
   };
+
+export const dashboardAdmin = async (): Promise<DashboardAdminResponse> => {
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-admin`);
+  return response.data;
+};
