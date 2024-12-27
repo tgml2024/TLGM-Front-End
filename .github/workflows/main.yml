@@ -38,12 +38,11 @@ jobs:
       - name: 🔨 Install Dependencies
         run: |
             echo "Clearing node_modules and reinstalling..."
-            r m -rf node_modules
+            rm -rf node_modules
             npm ci --no-audit --no-fund --prefer-offline --progress=false
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-          CI: true
-        
+            NODE_OPTIONS: "--max_old_space_size=4096"
+            CI: true
       # Step 5: Create .env file from GitHub Secrets
       - name: 📄 Create .env.production file
         run: |
