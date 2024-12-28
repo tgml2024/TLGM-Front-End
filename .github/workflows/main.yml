@@ -1,3 +1,4 @@
+# Updated CI Workflow
 name: 🚀 TLGM Deploy - Frontend
 
 on:
@@ -39,10 +40,16 @@ jobs:
         run: |
             echo "Clearing node_modules and reinstalling..."
             rm -rf node_modules
-            npm ci --no-audit --no-fund --prefer-offline --progress=false
+            if [ -f package-lock.json ]; then
+              npm install --no-audit --no-fund --prefer-offline --progress=false
+            else
+              npm install --package-lock-only
+              npm install --no-audit --no-fund --prefer-offline --progress=false
+            fi
         env:
             NODE_OPTIONS: "--max_old_space_size=4096"
             CI: true
+
       # Step 5: Create .env file from GitHub Secrets
       - name: 📄 Create .env.production file
         run: |
