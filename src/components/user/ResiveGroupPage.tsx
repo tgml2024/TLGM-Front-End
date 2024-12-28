@@ -19,10 +19,10 @@ interface Channel {
 }
 
 interface Group {
-  rgId: number;
-  userId: number;
-  rgName: string;
-  rgTid: string;
+  rg_id: number;
+  userid: number;
+  rg_name: string;
+  rg_tid: string;
 }
 
 const ResiveGroupPage = () => {
@@ -82,7 +82,7 @@ const ResiveGroupPage = () => {
   // Delete group mutation
   const deleteGroupMutation = useMutation({
     mutationFn: () =>
-      deleteGroupFromDatabase(selectedGroup!.rgId.toString(), userId!),
+      deleteGroupFromDatabase(selectedGroup!.rg_id.toString(), userId!),
   });
 
   // Handle mutations effects
@@ -94,10 +94,10 @@ const ResiveGroupPage = () => {
         (oldData: Group[] = []) => [
           ...oldData,
           {
-            rgId: addGroupMutation.data.groupId,
-            userId: parseInt(userId!, 10),
-            rgName: addGroupMutation.variables?.title,
-            rgTid: addGroupMutation.variables?.id,
+            rg_id: addGroupMutation.data.groupId,
+            userid: parseInt(userId!, 10),
+            rg_name: addGroupMutation.variables?.title,
+            rg_tid: addGroupMutation.variables?.id,
           },
         ]
       );
@@ -130,7 +130,7 @@ const ResiveGroupPage = () => {
       queryClient.setQueryData(
         ['receivingGroups', userId],
         (oldData: Group[] = []) =>
-          oldData.filter((group) => group.rgId !== selectedGroup?.rgId)
+          oldData.filter((group) => group.rg_id !== selectedGroup?.rg_id)
       );
       setIsModalOpen(false);
       setSelectedGroup(null);
@@ -464,10 +464,10 @@ const ResiveGroupPage = () => {
                               <button
                                 onClick={() =>
                                   openDeleteModal({
-                                    rgId: group.rg_id,
-                                    userId: group.userid,
-                                    rgName: group.rg_name,
-                                    rgTid: group.rg_tid,
+                                    rg_id: group.rg_id,
+                                    userid: group.userid,
+                                    rg_name: group.rg_name,
+                                    rg_tid: group.rg_tid,
                                   })
                                 }
                                 className="p-2 bg-red-500 hover:bg-red-600 rounded-md text-white transition-colors"
@@ -540,7 +540,7 @@ const ResiveGroupPage = () => {
                   <p className="text-gray-600 dark:text-gray-300">
                     Are you sure you want to delete group{' '}
                     <span className="font-semibold text-gray-800 dark:text-gray-100">
-                      {selectedGroup?.rgName}
+                      {selectedGroup?.rg_name}
                     </span>{' '}
                     ? <br />
                     This action cannot be undone
