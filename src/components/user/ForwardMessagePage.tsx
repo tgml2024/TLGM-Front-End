@@ -287,7 +287,7 @@ const ForwardMessage: React.FC = () => {
             {/* Interval Setting */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Check interval (minutes)
+                Set Time (minutes)
               </label>
               <input
                 type="text"
