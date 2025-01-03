@@ -2,9 +2,9 @@ import {
   ArrowLeftStartOnRectangleIcon,
   Bars3Icon,
   ChartBarIcon,
-  CheckBadgeIcon,
   Cog6ToothIcon,
   HomeIcon,
+  UserGroupIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/router';
@@ -23,11 +23,8 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: 'Home', icon: HomeIcon, path: '/admin' },
   { name: 'Dashboard', icon: ChartBarIcon, path: '/admin/dashboard' },
-  {
-    name: 'Confirm Telegram',
-    icon: CheckBadgeIcon,
-    path: '/admin/confirm',
-  },
+  { name: 'Manage Users', icon: UserGroupIcon, path: '/admin/manageusers' },
+  // { name: 'Add User', icon: UserPlusIcon, path: '/admin/adduser' },
 ];
 
 const AdminSidebar = () => {
