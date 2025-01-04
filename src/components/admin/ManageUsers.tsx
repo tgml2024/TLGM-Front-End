@@ -1,23 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
-interface User {
-  id: string;
-  name: string;
-  role: string;
-  avatar?: string;
-}
+import { getAdminUsers } from '../../services/manageuserService';
+import { Register } from '../../services/registerService';
 
-const users: User[] = [
-  { id: '1', name: 'Rebecca Fox', role: 'CEO', avatar: 'R' },
-  { id: '2', name: 'Maria Goodwin', role: 'Accountant', avatar: 'M' },
-  { id: '3', name: 'Taylor Hardy', role: 'Marketing Manager', avatar: 'T' },
-  // เพิ่มข้อมูลผู้ใช้คนอื่นๆ ตามต้องการ
-];
-
-// Add new interface for form data
 interface UserFormData {
   username: string;
   password: string;
+  name: string;
+}
+
+interface User {
+  userid: number;
+  username: string;
   name: string;
 }
 
@@ -28,12 +23,68 @@ const ManageUsers = () => {
     password: '',
     name: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await getAdminUsers();
+        setUsers(response.users);
+      } catch (error) {
+        toast.error('เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้');
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
-    setIsDrawerOpen(false);
+    setErrors({});
+
+    // Validation
+    const newErrors: Record<string, string> = {};
+    if (!formData.username) {
+      newErrors.username = 'กรุณากรอกชื่อผู้ใช้';
+    } else if (formData.username.length < 4 || formData.username.length > 20) {
+      newErrors.username = 'ชื่อผู้ใช้ต้องมีความยาว 4-20 ตัวอักษร';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'กรุณากรอกรหัสผ่าน';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+    }
+
+    if (!formData.name) {
+      newErrors.name = 'กรุณากรอกชื่อ';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await Register(formData);
+      // Refresh user list or add new user to the list
+      setIsDrawerOpen(false);
+      // Reset form
+      setFormData({ username: '', password: '', name: '' });
+      // You might want to show a success message
+      toast.success('เพิ่มผู้ใช้สำเร็จ');
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('เกิดข้อผิดพลาดในการเพิ่มผู้ใช้');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,8 +139,13 @@ const ManageUsers = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, username: e.target.value })
                 }
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.username ? 'border-red-500' : 'border-gray-300'
+                }`}
               />
+              {errors.username && (
+                <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -119,9 +175,10 @@ const ManageUsers = () => {
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              disabled={isLoading}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300"
             >
-              Add User
+              {isLoading ? 'กำลังเพิ่มผู้ใช้...' : 'เพิ่มผู้ใช้'}
             </button>
           </form>
         </div>
@@ -138,15 +195,23 @@ const ManageUsers = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {users.map((user) => (
           <div
-            key={user.id}
+            key={user.userid}
             className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3 hover:shadow-md transition-shadow"
           >
             <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-medium">
-              {user.avatar || user.name.charAt(0)}
+              {user.name.charAt(0)}
             </div>
-            <div>
-              <h3 className="font-medium text-gray-900">{user.name}</h3>
-              <p className="text-sm text-gray-500">{user.role}</p>
+            <div className="group relative">
+              <h3 className="font-medium text-gray-900 truncate max-w-[150px]">
+                {user.name}
+              </h3>
+              <div
+                className="absolute z-10 invisible group-hover:visible bg-gray-900 text-white text-sm rounded px-2 py-1 -mt-1 
+                transform -translate-y-full opacity-0 group-hover:opacity-100 transition-all duration-200"
+              >
+                {user.name}
+              </div>
+              <p className="text-sm text-gray-500">{user.username}</p>
             </div>
             <button className="ml-auto text-gray-400 hover:text-gray-600">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
