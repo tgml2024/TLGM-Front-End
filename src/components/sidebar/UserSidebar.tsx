@@ -5,8 +5,10 @@ import {
   Bars3Icon,
   ChartBarIcon,
   CheckBadgeIcon,
+  ChevronLeftIcon,
   Cog6ToothIcon,
   HomeIcon,
+  KeyIcon,
   PaperAirplaneIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -30,6 +32,7 @@ const navigation: NavItem[] = [
   { name: 'Sanding Group', icon: ArrowRightIcon, path: '/user/sandinggroup' },
   { name: 'Resive Group', icon: ArrowLeftIcon, path: '/user/resivegroup' },
   { name: 'Forward Message', icon: PaperAirplaneIcon, path: '/user/forward' },
+  { name: 'Send Message', icon: PaperAirplaneIcon, path: '/user/sandmessage' },
 ];
 
 const UserSidebar = () => {
@@ -41,6 +44,7 @@ const UserSidebar = () => {
   );
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showSettingsSubmenu, setShowSettingsSubmenu] = useState(false);
 
   // Add useRef for the dropdown container
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -87,7 +91,7 @@ const UserSidebar = () => {
     return name ? name.charAt(0).toUpperCase() : '?';
   };
 
-  // Add click outside handler
+  // Update click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -95,12 +99,18 @@ const UserSidebar = () => {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setShowProfileDropdown(false);
+        setShowSettingsSubmenu(false); // Reset settings submenu when closing dropdown
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Add this function to handle back button click
+  const handleBackFromSettings = () => {
+    setShowSettingsSubmenu(false);
+  };
 
   return (
     <>
@@ -118,7 +128,7 @@ const UserSidebar = () => {
           )}
         </button>
 
-        {/* เพิ��มปุ่มย่อ/ขยาย sidebar สำหรับหน้าจอ desktop */}
+        {/* เพิ่มปุ่มย่อ/ขยาย sidebar สำหรับหน้าจอ desktop */}
         <button
           className="hidden sm:flex p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 ml-2"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -134,7 +144,14 @@ const UserSidebar = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              onClick={() => {
+                if (showProfileDropdown) {
+                  setShowProfileDropdown(false);
+                  setShowSettingsSubmenu(false); // Reset settings submenu when closing dropdown
+                } else {
+                  setShowProfileDropdown(true);
+                }
+              }}
             >
               <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-bold text-white">
                 {getInitials(userProfile?.user.name || '')}
@@ -146,29 +163,100 @@ const UserSidebar = () => {
 
             {/* Profile Dropdown Menu */}
             {showProfileDropdown && (
-              <div className="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-                <div className="py-1">
-                  <button
-                    className="w-full flex items-center px-4 py-2 text-sm text-white dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      router.push('/user/settings');
-                      setShowProfileDropdown(false);
-                    }}
-                  >
-                    <Cog6ToothIcon className="w-5 h-5 mr-2" />
-                    Settings
-                  </button>
-                  <button
-                    className="w-full flex items-center px-4 py-2 text-sm text-white dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => {
-                      handleLogout();
-                      setShowProfileDropdown(false);
-                    }}
-                  >
-                    <ArrowLeftStartOnRectangleIcon className="w-5 h-5 mr-2" />
-                    Logout
-                  </button>
-                </div>
+              <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                {!showSettingsSubmenu ? (
+                  // Main Menu
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center">
+                          <span className="text-white font-medium">
+                            {getInitials(userProfile?.user.name || '')}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            {userProfile?.user.name}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                      onClick={() => setShowSettingsSubmenu(true)}
+                    >
+                      <Cog6ToothIcon className="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" />
+                      <span>Settings</span>
+                    </button>
+
+                    <button
+                      className="w-full flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
+                      onClick={() => {
+                        handleLogout();
+                        setShowProfileDropdown(false);
+                      }}
+                    >
+                      <ArrowLeftStartOnRectangleIcon className="w-5 h-5 mr-3" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                ) : (
+                  // Settings Submenu
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <button
+                        className="flex items-center text-sm text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+                        onClick={handleBackFromSettings}
+                      >
+                        <ChevronLeftIcon className="w-5 h-5 mr-2" />
+                        <span className="font-medium">Settings</span>
+                      </button>
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        className="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                        onClick={() => {
+                          router.push('/user/settings');
+                          setShowProfileDropdown(false);
+                        }}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
+                            <Cog6ToothIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">Profile Settings</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Manage your account details
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+
+                      <button
+                        className="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                        onClick={() => {
+                          router.push('/user/change-password');
+                          setShowProfileDropdown(false);
+                        }}
+                      >
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mr-3">
+                            <KeyIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium">Change Password</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              Update your password
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

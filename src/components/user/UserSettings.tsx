@@ -1,222 +1,274 @@
-import Image from 'next/image';
-import React, { useState } from 'react';
+import 'react-phone-number-input/style.css';
+import 'animate.css';
 
+import {
+  Cog6ToothIcon,
+  HashtagIcon,
+  KeyIcon,
+  PhoneIcon,
+  UserCircleIcon,
+} from '@heroicons/react/24/outline';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import PhoneInput from 'react-phone-number-input';
+
+import { getUserProfile, updateProfile } from '@/services/profileService';
 import withAuth from '@/utils/withAuth';
 
 type UserSettingsProps = {};
 
 const UserSettings: React.FC<UserSettingsProps> = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    fullName: '',
+    name: '',
+    api_id: '',
+    api_hash: '',
     phone: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-    avatar: null as File | null,
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [avatarPreview, setAvatarPreview] = useState<string>(
-    '/default-avatar.png'
-  );
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, files } = e.target;
-
-    if (name === 'avatar' && files && files[0]) {
+  const fetchUserProfile = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getUserProfile();
       setFormData({
-        ...formData,
-        avatar: files[0],
+        name: response.user?.name || '',
+        api_id: response.user?.api_id ? String(response.user.api_id) : '',
+        api_hash: response.user?.api_hash ? String(response.user.api_hash) : '',
+        phone: response.user?.phone || '',
       });
-      setAvatarPreview(URL.createObjectURL(files[0]));
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // เพิ่มโค้ดสำหรับการส่งข้อมูลฟอร์ม
-    // console.log(formData);
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Account Settings
-      </h2>
+  const handlePhoneChange = (value: string | undefined) => {
+    setFormData((prev) => ({
+      ...prev,
+      phone: value || '',
+    }));
+  };
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h3 className="text-xl font-semibold mb-4">Profile Picture</h3>
-        <div className="flex items-center space-x-6">
-          <div className="relative w-32 h-32">
-            <Image
-              src={avatarPreview}
-              alt="Profile picture"
-              fill
-              className="rounded-full object-cover"
-            />
-          </div>
-          <div>
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              accept="image/*"
-              onChange={handleChange}
-              className="hidden"
-            />
-            <label
-              htmlFor="avatar"
-              className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md cursor-pointer transition duration-200"
-            >
-              Change Photo
-            </label>
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setIsSubmitting(true);
+      await updateProfile(formData);
+      toast.success('อัพเดทข้อมูลสำเร็จ');
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || 'เกิดข้อผิดพลาดในการอัพเดทข้อมูล'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center animate__animated animate__fadeIn">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 animate__animated animate__pulse animate__infinite">
+            Loading profile...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Navigation Bar */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4 animate__animated animate__fadeInDown">
+        <div className="max-w-4xl mx-auto flex items-center">
+          <div className="flex items-center gap-3">
+            <Cog6ToothIcon className="w-8 h-8 text-blue-600" />
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Profile Settings
+            </h1>
           </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              <label
-                htmlFor="fullName"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Personal Information Section */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate__animated animate__fadeInUp animate__delay-300ms">
+            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Personal Information
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Update your account details and settings
+              </p>
             </div>
 
-            <div className="flex flex-col">
-              <label
-                htmlFor="username"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Username:
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            <div className="p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Name Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <UserCircleIcon className="w-5 h-5 text-gray-400" />
+                      Full Name
+                    </div>
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your full name"
+                  />
+                </div>
 
-            <div className="flex flex-col">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+                {/* Phone Field */}
+                <div className="space-y-2">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <PhoneIcon className="w-5 h-5 text-gray-400" />
+                      Phone Number
+                    </div>
+                  </label>
+                  <PhoneInput
+                    international
+                    defaultCountry="TH"
+                    value={formData.phone}
+                    onChange={handlePhoneChange}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+              </div>
 
-            <div className="flex flex-col">
-              <label
-                htmlFor="phone"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              {/* API Credentials */}
+              <div className="mt-8">
+                <h4 className="text-base font-medium text-gray-900 mb-4">
+                  API Credentials
+                </h4>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="api_id"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <KeyIcon className="w-5 h-5 text-gray-400" />
+                        API ID
+                      </div>
+                    </label>
+                    <input
+                      type="text"
+                      id="api_id"
+                      name="api_id"
+                      value={formData.api_id}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      placeholder="Enter your API ID"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="api_hash"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <HashtagIcon className="w-5 h-5 text-gray-400" />
+                        API Hash
+                      </div>
+                    </label>
+                    <input
+                      type="text"
+                      id="api_hash"
+                      name="api_hash"
+                      value={formData.api_hash}
+                      onChange={handleChange}
+                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      placeholder="Enter your API Hash"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-xl font-semibold mb-4">Change Password</h3>
-          <div className="space-y-4">
-            <div className="flex flex-col">
-              <label
-                htmlFor="currentPassword"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Current Password
-              </label>
-              <input
-                type="password"
-                id="currentPassword"
-                name="currentPassword"
-                value={formData.currentPassword}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label
-                htmlFor="newPassword"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                New Password
-              </label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label
-                htmlFor="confirmPassword"
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-4 pt-4 animate__animated animate__fadeInUp animate__delay-500ms">
+            <button
+              type="button"
+              className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-800 transition-colors duration-200"
+              disabled={isSubmitting}
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`
+                px-6 py-2.5 rounded-lg transition-all duration-200 
+                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+                font-medium flex items-center gap-2 shadow-sm
+                ${
+                  isSubmitting
+                    ? 'bg-blue-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }
+                text-white
+              `}
+            >
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>กำลังบันทึก...</span>
+                </>
+              ) : (
+                'บันทึกการเปลี่ยนแปลง'
+              )}
+            </button>
           </div>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

@@ -224,16 +224,16 @@ const ResiveGroupPage = () => {
   };
 
   return (
-    <div className=" bg-gray-50 p-2 sm:p-6">
+    <div className="bg-gray-50 p-2 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-8 flex items-center justify-center gap-2">
+        <h1 className="text-xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-8 flex items-center justify-center gap-2 animate__animated animate__fadeIn">
           <HiArchiveBoxArrowDown className="text-2xl sm:text-4xl text-blue-600" />
           Manage receiving groups
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-7">
-          {/* ส่วนของช่อง */}
-          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6">
+          {/* Channels Section */}
+          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6 animate__animated animate__fadeInLeft">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2 sm:gap-4">
               <h2 className="text-base sm:text-lg font-semibold text-gray-700">
                 Scan
@@ -370,8 +370,8 @@ const ResiveGroupPage = () => {
             </div>
           </div>
 
-          {/* ส่วนของกลุ่ม */}
-          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6">
+          {/* Groups Section */}
+          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6 animate__animated animate__fadeInRight">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
               <h2 className="text-base sm:text-lg font-semibold text-gray-700">
                 Receiving groups
@@ -510,14 +510,14 @@ const ResiveGroupPage = () => {
           </div>
         </div>
 
-        {/* Modal ยืนยันการลบ */}
+        {/* Modal with Animation */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="fixed inset-0 bg-black/50"
               onClick={closeDeleteModal}
             />
-            <div className="relative bg-white dark:bg-gray-800 w-full max-w-[90%] sm:max-w-md rounded-3xl shadow-2xl">
+            <div className="relative bg-white dark:bg-gray-800 w-full max-w-[90%] sm:max-w-md rounded-3xl shadow-2xl animate__animated animate__zoomIn">
               <div className="p-4 sm:p-8">
                 <div className="text-center mb-6">
                   <svg

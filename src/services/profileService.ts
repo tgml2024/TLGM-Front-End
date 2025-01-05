@@ -14,3 +14,16 @@ export const getAdminProfiles = async (): Promise<AdminProfileResponse> => {
   const response = await axios.get(`${API_URL}/api/v1/adminProfile`);
   return response.data;
 };
+
+export const updateProfile = async (profileData: {
+  name: string;
+  phone: string;
+  api_id: string;
+  api_hash: string;
+}) => {
+  const response = await axios.put(
+    `${API_URL}/api/v1/updateProfile`,
+    profileData
+  );
+  return response.data;
+};

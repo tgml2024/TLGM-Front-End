@@ -1,3 +1,5 @@
+import 'animate.css';
+
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { MdForward } from 'react-icons/md';
@@ -237,12 +239,12 @@ const ForwardMessage: React.FC = () => {
   // UI Components
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8 flex items-center justify-center gap-2">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8 flex items-center justify-center gap-2 animate__animated animate__fadeIn">
         <MdForward className="text-blue-600" />
         Message Forwarding
       </h1>
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100">
+        <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100 animate__animated animate__fadeInDown">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div
@@ -258,7 +260,7 @@ const ForwardMessage: React.FC = () => {
 
           {/* Last Message Section */}
           {lastMessage && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg animate__animated animate__fadeInUp">
               <h4 className="text-sm font-medium text-gray-500 mb-2">
                 Last Message
               </h4>
@@ -270,7 +272,7 @@ const ForwardMessage: React.FC = () => {
           )}
 
           {forwardingState.error && (
-            <span className="text-sm px-3 py-1 bg-red-50 text-red-600 rounded-full">
+            <span className="text-sm px-3 py-1 bg-red-50 text-red-600 rounded-full animate__animated animate__shakeX">
               {forwardingState.error}
             </span>
           )}
@@ -279,7 +281,7 @@ const ForwardMessage: React.FC = () => {
         {/* Control Panel */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Panel: Controls */}
-          <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100">
+          <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100 animate__animated animate__fadeInLeft">
             <h3 className="text-xl font-semibold mb-6 text-gray-800">
               Control
             </h3>
@@ -352,7 +354,7 @@ const ForwardMessage: React.FC = () => {
           </div>
 
           {/* Right Panel: Groups Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 animate__animated animate__fadeInRight">
             {/* Source Group */}
             <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100">
               <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
