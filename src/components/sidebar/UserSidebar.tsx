@@ -32,7 +32,7 @@ const navigation: NavItem[] = [
   { name: 'Sanding Group', icon: ArrowRightIcon, path: '/user/sandinggroup' },
   { name: 'Resive Group', icon: ArrowLeftIcon, path: '/user/resivegroup' },
   { name: 'Forward Message', icon: PaperAirplaneIcon, path: '/user/forward' },
-  { name: 'Sand Message', icon: PaperAirplaneIcon, path: '/user/sandmessage' },
+  { name: 'Send Message', icon: PaperAirplaneIcon, path: '/user/sendingpage' },
 ];
 
 const UserSidebar = () => {
