@@ -180,7 +180,7 @@ const SandingGroupPage = () => {
   return (
     <div className="bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center gap-3 mb-6 sm:mb-8">
+        <div className="flex items-center justify-center gap-3 mb-6 sm:mb-8 animate__animated animate__fadeIn">
           <MdOutlineForwardToInbox className="w-8 h-8 text-blue-800" />
           <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
             Manage sending groups
@@ -188,7 +188,7 @@ const SandingGroupPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6">
+          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 animate__animated animate__fadeInLeft">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
               <h2 className="text-lg font-semibold text-gray-700">
                 Scan channel
@@ -303,7 +303,7 @@ const SandingGroupPage = () => {
           </div>
 
           {/* Section for Sending Groups */}
-          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6">
+          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 animate__animated animate__fadeInRight">
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Sending groups
             </h2>
@@ -387,7 +387,7 @@ const SandingGroupPage = () => {
               className="fixed inset-0 bg-black/50"
               onClick={closeDeleteModal}
             />
-            <div className="relative bg-white dark:bg-gray-800 w-full max-w-[90%] sm:max-w-md rounded-3xl shadow-2xl">
+            <div className="relative bg-white w-full max-w-md rounded-lg shadow-xl animate__animated animate__zoomIn">
               <div className="p-4 sm:p-8">
                 <div className="text-center mb-6">
                   <svg

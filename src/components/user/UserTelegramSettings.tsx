@@ -60,9 +60,9 @@ const UserTelegramSettings = () => {
       try {
         const profileData = await getUserProfile();
         setUserProfile(profileData.user);
-        setValue('apiId', profileData.user.api_id.toString());
-        setValue('apiHash', profileData.user.api_hash);
-        setValue('phoneNumber', profileData.user.phone);
+        setValue('apiId', profileData.user.api_id?.toString() || '');
+        setValue('apiHash', profileData.user.api_hash || '');
+        setValue('phoneNumber', profileData.user.phone || '');
         setValue('userid', profileData.user.userid.toString());
         setValue('telegram_auth', profileData.user.telegram_auth);
 
@@ -71,7 +71,7 @@ const UserTelegramSettings = () => {
         setIsClientStarted(isAuth);
 
         if (isAuth) {
-          setActiveApiId(profileData.user.api_id.toString());
+          setActiveApiId(profileData.user.api_id?.toString() || '');
         }
       } catch (error) {
         toast.error('Cannot fetch profile data');
@@ -316,19 +316,28 @@ const UserTelegramSettings = () => {
     <FormProvider {...methods}>
       <div className="space-y-6">
         <div className="w-full p-6 bg-white shadow-md rounded-md">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-10 text-center flex items-center justify-center gap-3">
+          <h2 className="text-3xl font-semibold text-gray-800 mb-10 text-center flex items-center justify-center gap-3 animate__animated animate__fadeIn">
             <FaTelegram className="text-[#0088cc]" />
             Start Telegram Client
           </h2>
 
-          {/* แสดง working status เมื่อ telegram_auth เป็น 1 */}
-          {userProfile?.telegram_auth === 1
-            ? renderWorkingStatus()
-            : renderStepper()}
+          {/* Status Section */}
+          {userProfile?.telegram_auth === 1 ? (
+            <div className="animate__animated animate__fadeInDown">
+              {renderWorkingStatus()}
+            </div>
+          ) : (
+            <div className="animate__animated animate__fadeInDown">
+              {renderStepper()}
+            </div>
+          )}
 
-          {/* แสดงฟอร์มเมื่อ telegram_auth เป็น 0 */}
+          {/* Form Section */}
           {userProfile?.telegram_auth === 0 && (
-            <form onSubmit={handleSubmit(handleStepSubmit)}>
+            <form
+              onSubmit={handleSubmit(handleStepSubmit)}
+              className="animate__animated animate__fadeInUp"
+            >
               {step === 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="mb-4">

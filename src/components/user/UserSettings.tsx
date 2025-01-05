@@ -1,4 +1,5 @@
 import 'react-phone-number-input/style.css';
+import 'animate.css';
 
 import {
   Cog6ToothIcon,
@@ -78,9 +79,11 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center animate__animated animate__fadeIn">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading profile...</p>
+          <p className="mt-4 text-gray-600 animate__animated animate__pulse animate__infinite">
+            Loading profile...
+          </p>
         </div>
       </div>
     );
@@ -89,7 +92,7 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-white border-b border-gray-200 px-4 py-4 animate__animated animate__fadeInDown">
         <div className="max-w-4xl mx-auto flex items-center">
           <div className="flex items-center gap-3">
             <Cog6ToothIcon className="w-8 h-8 text-blue-600" />
@@ -104,7 +107,7 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Information Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate__animated animate__fadeInUp animate__delay-300ms">
             <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
               <h3 className="text-lg font-medium text-gray-900">
                 Personal Information
@@ -212,7 +215,7 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-4 pt-4">
+          <div className="flex items-center justify-end gap-4 pt-4 animate__animated animate__fadeInUp animate__delay-500ms">
             <button
               type="button"
               className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-800 transition-colors duration-200"
