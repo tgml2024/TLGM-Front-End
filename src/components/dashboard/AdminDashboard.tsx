@@ -1,19 +1,31 @@
 import { CogIcon } from '@heroicons/react/24/outline';
+import { DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs, { Dayjs } from 'dayjs';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import React, { useEffect, useState } from 'react';
 
 import Chart from '@/components/chart/Chart';
 import { dashboardAdmin, getActiveForwarders } from '@/services/forwardService';
 import withAuth from '@/utils/withAuth';
 
-type TimeRange = 'daily' | 'weekly' | 'monthly' | 'yearly';
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const Dashboard: React.FC = () => {
   const [activeForwarders, setActiveForwarders] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
   const [dashboardData, setDashboardData] = useState<any>(null);
-  const [selectedTimeRange, setSelectedTimeRange] =
-    useState<TimeRange>('daily');
+  const [dateRange, setDateRange] = useState<{
+    startDate: Dayjs | null;
+    endDate: Dayjs | null;
+  }>({
+    startDate: dayjs().subtract(7, 'day'),
+    endDate: dayjs(),
+  });
 
   useEffect(() => {
     const fetchActiveForwarders = async () => {
@@ -29,7 +41,10 @@ const Dashboard: React.FC = () => {
 
     const fetchDashboardData = async () => {
       try {
-        const response = await dashboardAdmin();
+        const response = await dashboardAdmin({
+          startDate: dateRange.startDate?.format('YYYY-MM-DD'),
+          endDate: dateRange.endDate?.format('YYYY-MM-DD'),
+        });
         setDashboardData(response.data);
       } catch (err) {
         setError('Failed to fetch dashboard data');
@@ -37,26 +52,21 @@ const Dashboard: React.FC = () => {
     };
 
     fetchActiveForwarders();
-    fetchDashboardData();
+    if (dateRange.startDate && dateRange.endDate) {
+      fetchDashboardData();
+    }
     const interval = setInterval(() => {
       fetchActiveForwarders();
       fetchDashboardData();
     }, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [dateRange.startDate, dateRange.endDate]);
 
-  const timeRangeButtons: { label: string; value: TimeRange }[] = [
-    { label: 'Daily', value: 'daily' },
-    { label: 'Weekly', value: 'weekly' },
-    { label: 'Monthly', value: 'monthly' },
-    { label: 'Yearly', value: 'yearly' },
-  ];
-
-  const getTimeRangeData = () => {
+  const getFilteredData = () => {
     if (!dashboardData) return null;
     return {
-      forwards: dashboardData[selectedTimeRange].forwards,
-      details: dashboardData[selectedTimeRange].details,
+      forwards: dashboardData.forwards || [],
+      details: dashboardData.details || [],
     };
   };
 
@@ -115,26 +125,33 @@ const Dashboard: React.FC = () => {
       </div>
       <div className="max-w-5xl mx-auto mb-6">
         <div className="bg-white rounded-lg shadow-md p-4">
-          <div className="flex justify-center gap-4">
-            {timeRangeButtons.map((button) => (
-              <button
-                key={button.value}
-                onClick={() => setSelectedTimeRange(button.value)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  selectedTimeRange === button.value
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {button.label}
-              </button>
-            ))}
-          </div>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="flex justify-center gap-4 items-center">
+              <DatePicker
+                label="Start Date"
+                value={dateRange.startDate}
+                onChange={(newValue) =>
+                  setDateRange((prev) => ({ ...prev, startDate: newValue }))
+                }
+                maxDate={dateRange.endDate || undefined}
+              />
+              <span className="text-gray-500">to</span>
+              <DatePicker
+                label="End Date"
+                value={dateRange.endDate}
+                onChange={(newValue) =>
+                  setDateRange((prev) => ({ ...prev, endDate: newValue }))
+                }
+                minDate={dateRange.startDate || undefined}
+                maxDate={dayjs()}
+              />
+            </div>
+          </LocalizationProvider>
         </div>
       </div>
       {dashboardData && (
         <div className="max-w-5xl mx-auto">
-          <Chart data={getTimeRangeData()} timeRange={selectedTimeRange} />
+          <Chart data={getFilteredData()} />
         </div>
       )}
     </div>
