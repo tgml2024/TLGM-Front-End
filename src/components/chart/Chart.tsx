@@ -26,26 +26,12 @@ ChartJS.register(
 
 interface ChartProps {
   data: any;
-  timeRange: 'daily' | 'weekly' | 'monthly' | 'yearly';
 }
 
-const Chart: React.FC<ChartProps> = ({ data, timeRange }) => {
+const Chart: React.FC<ChartProps> = ({ data }) => {
   const getLabels = () => {
     if (!data?.forwards) return [];
-    return data.forwards.map((item: any) => {
-      switch (timeRange) {
-        case 'daily':
-          return item.date;
-        case 'weekly':
-          return `Week ${item.week}`;
-        case 'monthly':
-          return item.month;
-        case 'yearly':
-          return item.year;
-        default:
-          return item.date;
-      }
-    });
+    return data.forwards.map((item: any) => item.date);
   };
 
   const lineChartData = {

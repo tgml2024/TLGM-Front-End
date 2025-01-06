@@ -168,7 +168,15 @@ export const getActiveForwarders =
     return response.data;
   };
 
-export const dashboardAdmin = async (): Promise<DashboardAdminResponse> => {
-  const response = await axios.get(`${API_URL}/api/v1/dashboard-admin`);
+export const dashboardAdmin = async (params: {
+  startDate?: string;
+  endDate?: string;
+}): Promise<DashboardAdminResponse> => {
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-admin`, {
+    params: {
+      startDate: params.startDate,
+      endDate: params.endDate,
+    },
+  });
   return response.data;
 };
