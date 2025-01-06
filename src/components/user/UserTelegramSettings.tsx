@@ -1,3 +1,5 @@
+import 'react-phone-number-input/style.css';
+
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -8,6 +10,7 @@ import {
   FaStop,
   FaTelegram,
 } from 'react-icons/fa';
+import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
 
 import { getUserProfile } from '@/services/profileService';
 import {
@@ -105,16 +108,21 @@ const UserTelegramSettings = () => {
   // Step 1: ส่งเบอร์โทรศัพท์
   const handleSendPhone = async (data: FormData) => {
     try {
+      // ตรวจสอบความถูกต้องของเบอร์โทร
+      if (!isValidPhoneNumber(data.phoneNumber)) {
+        throw new Error('Invalid phone number');
+      }
+
       const response = await sendPhone(
         data.apiId,
-        data.phoneNumber,
+        data.phoneNumber, // เบอร์โทรจะอยู่ในรูปแบบ E.164 แล้ว (เช่น +66812345678)
         data.userid
       );
       setPhoneCodeHash(response.phoneCodeHash);
       setStep(2);
       toast.success('OTP sent successfully!');
     } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to send OTP');
+      toast.error(error.message || 'Failed to send OTP');
     }
   };
 
@@ -387,21 +395,29 @@ const UserTelegramSettings = () => {
                 <div className="mb-4">
                   <label
                     htmlFor="phoneNumber"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Phone Number:
+                    Phone Number
                   </label>
-                  <input
-                    {...register('phoneNumber', {
-                      required: 'Phone number is required',
-                    })}
-                    id="phoneNumber"
-                    type="tel"
+                  <PhoneInput
+                    international
+                    defaultCountry="TH"
+                    value={methods.watch('phoneNumber')}
+                    onChange={(value) =>
+                      methods.setValue('phoneNumber', value || '')
+                    }
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    error={(() => {
+                      const phoneNumber = methods.watch('phoneNumber');
+                      if (!phoneNumber) return 'Phone number required';
+                      if (!isValidPhoneNumber(phoneNumber))
+                        return 'Invalid phone number';
+                      return undefined;
+                    })()}
                   />
-                  {errors.phoneNumber && (
-                    <p className="text-red-500 text-sm">
-                      {errors.phoneNumber.message}
+                  {methods.formState.errors.phoneNumber && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {methods.formState.errors.phoneNumber.message}
                     </p>
                   )}
                 </div>
