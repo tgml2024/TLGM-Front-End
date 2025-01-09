@@ -102,13 +102,19 @@ function ChartForward({ data, viewMode }: ChartForwardProps) {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     interaction: {
       mode: 'index' as const,
       intersect: false,
     },
     plugins: {
       legend: {
-        display: false,
+        position: 'top' as const,
+        labels: {
+          font: {
+            size: window.innerWidth < 768 ? 10 : 12,
+          },
+        },
       },
       title: {
         display: true,
@@ -116,38 +122,30 @@ function ChartForward({ data, viewMode }: ChartForwardProps) {
           viewMode.charAt(0).toUpperCase() + viewMode.slice(1)
         })`,
         font: {
-          size: 16,
-          weight: 'bold' as const,
+          size: window.innerWidth < 768 ? 12 : 14,
         },
-        padding: 20,
       },
     },
     scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Total Forwards',
+      x: {
+        ticks: {
           font: {
-            size: 14,
+            size: window.innerWidth < 768 ? 10 : 12,
           },
-          padding: 10,
-        },
-        grid: {
-          color: 'rgba(0, 0, 0, 0.05)',
-          drawBorder: false,
         },
       },
-      x: {
-        grid: {
-          display: false,
+      y: {
+        ticks: {
+          font: {
+            size: window.innerWidth < 768 ? 10 : 12,
+          },
         },
       },
     },
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
+    <div className="h-[250px] md:h-[400px]">
       <Chart type="bar" options={options} data={getChartData()} />
     </div>
   );

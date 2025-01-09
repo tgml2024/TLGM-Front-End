@@ -29,16 +29,24 @@ const Piechart = ({ data }: PiechartProps) => {
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          font: {
+            size: window.innerWidth < 768 ? 10 : 12,
+          },
+        },
       },
       title: {
         display: true,
         text: 'Forward Success/Fail Distribution',
+        font: {
+          size: window.innerWidth < 768 ? 12 : 14,
+        },
       },
     },
   };
 
   return (
-    <div className="h-[300px]">
+    <div className="h-[200px] md:h-[300px]">
       <Pie data={chartData} options={options} />
     </div>
   );
