@@ -51,6 +51,17 @@ export interface DashboardYearResponse {
   };
 }
 
+export interface DashboardTotalResponse {
+  success: boolean;
+  data: {
+    summary: {
+      total_forwards: number;
+      total_success: number;
+      total_fail: number;
+    };
+  };
+}
+
 export const getDashboardDay = async (
   date: string
 ): Promise<DashboardDayResponse> => {
@@ -75,5 +86,10 @@ export const getDashboardYear = async (
   const response = await axios.get(`${API_URL}/api/v1/dashboard-admin/year`, {
     params: { year },
   });
+  return response.data;
+};
+
+export const getDashboardTotal = async (): Promise<DashboardTotalResponse> => {
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-admin/total`);
   return response.data;
 };

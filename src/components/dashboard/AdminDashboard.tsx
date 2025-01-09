@@ -10,6 +10,7 @@ import {
   DashboardYearResponse,
   getDashboardDay,
   getDashboardMonth,
+  getDashboardTotal,
   getDashboardYear,
 } from '@/services/dashboardAdminService';
 import { getActiveForwarders } from '@/services/forwardService';
@@ -28,6 +29,15 @@ const Dashboard: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<
     DashboardDayResponse | DashboardMonthResponse | DashboardYearResponse | null
   >(null);
+  const [totalStats, setTotalStats] = useState<{
+    total_forwards: number;
+    total_success: number;
+    total_fail: number;
+  }>({
+    total_forwards: 0,
+    total_success: 0,
+    total_fail: 0,
+  });
 
   const fetchData = async () => {
     try {
@@ -81,6 +91,19 @@ const Dashboard: React.FC = () => {
 
     fetchDashboardData();
   }, [viewMode, selectedDate]);
+
+  useEffect(() => {
+    const fetchTotalStats = async () => {
+      try {
+        const response = await getDashboardTotal();
+        setTotalStats(response.data.summary);
+      } catch (err) {
+        toast.error('Failed to fetch total statistics');
+      }
+    };
+
+    fetchTotalStats();
+  }, []);
 
   const getDateFormat = (mode: 'day' | 'month' | 'year') => {
     switch (mode) {
@@ -149,7 +172,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-7xl mx-auto mb-6">
         <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center gap-3 mb-2">
             <CogIcon className="h-6 w-6 text-blue-500" />
@@ -165,33 +188,42 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <CogIcon className="h-6 w-6 text-blue-500" />
+            <CogIcon className="h-6 w-6 text-purple-500" />
             <h2 className="text-sm font-medium text-gray-700">
-              Active Forwarders
+              Total Forwards
             </h2>
           </div>
           <div className="flex justify-center">
-            <div className="text-3xl font-bold text-blue-600 px-4 py-2 rounded-lg">
-              {activeForwarders}
+            <div className="text-3xl font-bold text-purple-600 px-4 py-2 rounded-lg">
+              {totalStats.total_forwards}
             </div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center gap-3 mb-2">
-            <CogIcon className="h-6 w-6 text-blue-500" />
-            <h2 className="text-sm font-medium text-gray-700">
-              Active Forwarders
-            </h2>
+            <CogIcon className="h-6 w-6 text-green-500" />
+            <h2 className="text-sm font-medium text-gray-700">Total Success</h2>
           </div>
           <div className="flex justify-center">
-            <div className="text-3xl font-bold text-blue-600 px-4 py-2 rounded-lg">
-              {activeForwarders}
+            <div className="text-3xl font-bold text-green-600 px-4 py-2 rounded-lg">
+              {totalStats.total_success}
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
+          <div className="flex items-center gap-3 mb-2">
+            <CogIcon className="h-6 w-6 text-red-500" />
+            <h2 className="text-sm font-medium text-gray-700">Total Fail</h2>
+          </div>
+          <div className="flex justify-center">
+            <div className="text-3xl font-bold text-red-600 px-4 py-2 rounded-lg">
+              {totalStats.total_fail}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto mb-6 flex flex-col">
+      <div className="max-w-7xl mx-auto mb-6 flex flex-col">
         <div className="flex justify-center mb-6">
           <div className="flex items-center gap-6 bg-white p-3 rounded-lg shadow-sm">
             <div className="flex gap-1">
