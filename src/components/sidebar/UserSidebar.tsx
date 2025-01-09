@@ -35,6 +35,22 @@ const navigation: NavItem[] = [
   { name: 'Send Message', icon: PaperAirplaneIcon, path: '/user/sandmessage' },
 ];
 
+const animations = [
+  'animate__tada',
+  'animate__headShake',
+  'animate__rubberBand',
+];
+
+const getRandomAnimation = () => {
+  const randomIndex = Math.floor(Math.random() * animations.length);
+  return animations[randomIndex];
+};
+
+// เพิ่ม interface
+interface IconAnimations {
+  [key: string]: string;
+}
+
 const UserSidebar = () => {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -48,6 +64,9 @@ const UserSidebar = () => {
 
   // Add useRef for the dropdown container
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // เพิ่ม state สำหรับเก็บ animations
+  const [iconAnimations, setIconAnimations] = useState<IconAnimations>({});
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -111,6 +130,25 @@ const UserSidebar = () => {
   const handleBackFromSettings = () => {
     setShowSettingsSubmenu(false);
   };
+
+  // เพิ่ม useEffect �พื่อสุ่ม animations ใหม่ทุกๆ 3 วินาที
+  useEffect(() => {
+    const updateAnimations = () => {
+      const newAnimations = navigation.reduce(
+        (acc, item) => ({
+          ...acc,
+          [item.name]: getRandomAnimation(),
+        }),
+        {}
+      );
+      setIconAnimations(newAnimations);
+    };
+
+    updateAnimations(); // สุ่มครั้งแรก
+    const interval = setInterval(updateAnimations, 3000); // สุ่มทุก 3 วินาที
+
+    return () => clearInterval(interval); // cleanup
+  }, []);
 
   return (
     <>
@@ -285,7 +323,7 @@ const UserSidebar = () => {
                   router.push(item.path);
                 }}
                 className={`
-                  flex items-center px-4 py-2 text-sm
+                  flex items-center px-4 py-2 text-sm group
                   ${
                     router.pathname === item.path
                       ? 'bg-gray-100 dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-600'
@@ -294,7 +332,15 @@ const UserSidebar = () => {
                   cursor-pointer transition-colors duration-200
                 `}
               >
-                <item.icon className="w-5 h-5 mr-3" aria-hidden="true" />
+                <item.icon
+                  className={`
+                    w-5 h-5 mr-3 animate__animated ${
+                      iconAnimations[item.name]
+                    } animate__infinite animate__slower
+                    group-hover:animate__headShake
+                  `}
+                  aria-hidden="true"
+                />
                 {!isCollapsed && item.name}
               </div>
             ))}

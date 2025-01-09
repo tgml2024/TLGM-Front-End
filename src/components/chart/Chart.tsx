@@ -1,7 +1,10 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
-  ArcElement,
+  BarElement,
   CategoryScale,
   Chart as ChartJS,
+  ChartData,
   Legend,
   LinearScale,
   LineElement,
@@ -9,8 +12,14 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import React from 'react';
-import { Line, Pie } from 'react-chartjs-2';
+import dayjs from 'dayjs';
+import { Chart } from 'react-chartjs-2';
+
+import {
+  DashboardDayResponse,
+  DashboardMonthResponse,
+  DashboardYearResponse,
+} from '@/services/dashboardAdminService';
 
 // Register ChartJS components
 ChartJS.register(
@@ -18,182 +27,126 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
-  Legend,
-  ArcElement
+  Legend
 );
 
-interface ChartProps {
-  data: any;
+interface ChartForwardProps {
+  data: DashboardDayResponse | DashboardMonthResponse | DashboardYearResponse;
+  viewMode: 'day' | 'month' | 'year';
 }
 
-const Chart: React.FC<ChartProps> = ({ data }) => {
-  const getLabels = () => {
-    if (!data?.forwards) return [];
-    return data.forwards.map((item: any) => item.date);
+function ChartForward({ data, viewMode }: ChartForwardProps) {
+  const getChartData = (): ChartData<'bar' | 'line'> => {
+    if (!data?.data) return { labels: [], datasets: [] };
+
+    let chartData: any[] = [];
+    if ('hours' in data.data) {
+      chartData = data.data.hours || [];
+    } else if ('days' in data.data) {
+      chartData = data.data.days || [];
+    } else if ('months' in data.data) {
+      chartData = data.data.months || [];
+    } else {
+      chartData = [];
+    }
+
+    const forwardsData = chartData.map((item) => item.forwards[0]?.total || 0);
+
+    return {
+      labels: chartData.map((item: any) =>
+        viewMode === 'day'
+          ? item.hour
+          : dayjs(item.date).format(viewMode === 'month' ? 'DD' : 'MMM')
+      ),
+      datasets: [
+        {
+          type: 'line' as const,
+          label: 'Trend',
+          data: forwardsData,
+          borderColor: '#4A90E2',
+          borderWidth: 3,
+          pointRadius: 4,
+          pointBackgroundColor: '#4A90E2',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: '#4A90E2',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          fill: false,
+          tension: 0.4,
+          order: 1,
+        },
+        {
+          type: 'bar' as const,
+          label: 'Total Forwards',
+          data: forwardsData,
+          backgroundColor: 'rgba(74, 144, 226, 0.1)',
+          borderColor: 'rgba(74, 144, 226, 0.4)',
+          borderWidth: 1,
+          borderRadius: 4,
+          hoverBackgroundColor: 'rgba(74, 144, 226, 0.3)',
+          hoverBorderColor: '#4A90E2',
+          order: 2,
+        },
+      ],
+    };
   };
 
-  const lineChartData = {
-    labels: getLabels(),
-    datasets: [
-      {
-        label: 'Total Forwards',
-        data: data?.forwards?.map((item: any) => item.total_forwards) || [],
-        borderColor: '#4F46E5',
-        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-        borderWidth: 2,
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4,
-        pointBackgroundColor: '#4F46E5',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointHoverRadius: 6,
-        pointHoverBackgroundColor: '#4F46E5',
-        pointHoverBorderColor: '#fff',
-        pointHoverBorderWidth: 2,
-      },
-    ],
-  };
-
-  const lineChartOptions = {
+  const options = {
     responsive: true,
-    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+    },
     plugins: {
       legend: {
-        display: true,
-        position: 'top' as const,
-        labels: {
-          usePointStyle: true,
-          boxWidth: 6,
-          font: {
-            size: 13,
-            family: "'Inter', sans-serif",
-          },
-        },
+        display: false,
       },
-      tooltip: {
-        mode: 'index' as const,
-        intersect: false,
-        backgroundColor: 'rgba(17, 24, 39, 0.8)',
-        titleFont: {
-          size: 13,
-          family: "'Inter', sans-serif",
+      title: {
+        display: true,
+        text: `Forward Statistics (${
+          viewMode.charAt(0).toUpperCase() + viewMode.slice(1)
+        })`,
+        font: {
+          size: 16,
+          weight: 'bold' as const,
         },
-        bodyFont: {
-          size: 12,
-          family: "'Inter', sans-serif",
-        },
-        padding: 12,
-        cornerRadius: 8,
-        displayColors: false,
+        padding: 20,
       },
     },
     scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Total Forwards',
+          font: {
+            size: 14,
+          },
+          padding: 10,
+        },
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)',
+          drawBorder: false,
+        },
+      },
       x: {
         grid: {
           display: false,
         },
-        ticks: {
-          font: {
-            size: 12,
-            family: "'Inter', sans-serif",
-          },
-          color: '#6B7280',
-        },
-        border: {
-          display: false,
-        },
-      },
-      y: {
-        grid: {
-          color: 'rgba(243, 244, 246, 1)',
-          drawBorder: false,
-        },
-        ticks: {
-          font: {
-            size: 12,
-            family: "'Inter', sans-serif",
-          },
-          color: '#6B7280',
-          padding: 8,
-        },
-        border: {
-          display: false,
-        },
       },
     },
-    interaction: {
-      mode: 'nearest' as const,
-      axis: 'x' as const,
-      intersect: false,
-    },
-    animation: {
-      duration: 1000,
-    },
-  };
-
-  const pieChartData = {
-    labels: ['Success', 'Fail'],
-    datasets: [
-      {
-        data: [
-          data?.details?.reduce(
-            (acc: number, item: any) => acc + item.total_success,
-            0
-          ),
-          data?.details?.reduce(
-            (acc: number, item: any) => acc + item.total_fail,
-            0
-          ),
-        ],
-        backgroundColor: ['#36A2EB', '#FF6384'],
-        borderWidth: 0,
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-  const pieOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          usePointStyle: true,
-          padding: 20,
-          font: {
-            size: 13,
-            family: "'Inter', sans-serif",
-          },
-        },
-      },
-    },
-    cutout: '0%',
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6">
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
-        <h3 className="text-xl font-medium mb-4 text-gray-700 text-center">
-          Daily Details
-        </h3>
-        <div className="h-[300px]">
-          <Pie data={pieChartData} options={pieOptions} />
-        </div>
-      </div>
-      <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-300">
-        <h3 className="text-xl font-medium mb-4 text-gray-700 text-center">
-          Daily Forwards
-        </h3>
-        <div className="h-[300px]">
-          <Line data={lineChartData} options={lineChartOptions} />
-        </div>
-      </div>
+    <div className="bg-white p-4 rounded-lg shadow-md">
+      <Chart type="bar" options={options} data={getChartData()} />
     </div>
   );
-};
+}
 
-export default Chart;
+export default ChartForward;

@@ -1,3 +1,5 @@
+import 'animate.css';
+
 import {
   ArrowLeftStartOnRectangleIcon,
   Bars3Icon,
@@ -22,10 +24,29 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: 'Home', icon: HomeIcon, path: '/admin' },
-  { name: 'Dashboard', icon: ChartBarIcon, path: '/admin/dashboard' },
+  {
+    name: 'Dashboard Range',
+    icon: ChartBarIcon,
+    path: '/admin/dashboardrange',
+  },
   { name: 'Manage Users', icon: UserGroupIcon, path: '/admin/manageusers' },
   // { name: 'Add User', icon: UserPlusIcon, path: '/admin/adduser' },
 ];
+
+const animations = [
+  'animate__tada',
+  'animate__headShake',
+  'animate__rubberBand',
+];
+
+const getRandomAnimation = () => {
+  const randomIndex = Math.floor(Math.random() * animations.length);
+  return animations[randomIndex];
+};
+
+interface IconAnimations {
+  [key: string]: string;
+}
 
 const AdminSidebar = () => {
   const router = useRouter();
@@ -37,6 +58,7 @@ const AdminSidebar = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [iconAnimations, setIconAnimations] = useState<IconAnimations>({});
 
   const handleLogout = async () => {
     setShowLogoutModal(true);
@@ -86,6 +108,24 @@ const AdminSidebar = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const updateAnimations = () => {
+      const newAnimations = navigation.reduce(
+        (acc, item) => ({
+          ...acc,
+          [item.name]: getRandomAnimation(),
+        }),
+        {}
+      );
+      setIconAnimations(newAnimations);
+    };
+
+    updateAnimations();
+    const interval = setInterval(updateAnimations, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const getInitials = (name: string) => {
@@ -193,7 +233,15 @@ const AdminSidebar = () => {
                   cursor-pointer transition-colors duration-200
                 `}
               >
-                <item.icon className="w-5 h-5 mr-3" aria-hidden="true" />
+                <item.icon
+                  className={`
+                    w-5 h-5 mr-3 animate__animated ${
+                      iconAnimations[item.name]
+                    } animate__infinite animate__slower
+                    group-hover:animate__headShake
+                  `}
+                  aria-hidden="true"
+                />
                 {!isCollapsed && item.name}
               </div>
             ))}
