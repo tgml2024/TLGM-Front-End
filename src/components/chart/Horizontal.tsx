@@ -49,17 +49,32 @@ const Horizontal = ({ data }: HorizontalProps) => {
       title: {
         display: true,
         text: 'Forward Success/Fail Distribution',
+        font: {
+          size: window.innerWidth < 768 ? 12 : 14,
+        },
       },
     },
     scales: {
       x: {
         beginAtZero: true,
+        ticks: {
+          font: {
+            size: window.innerWidth < 768 ? 10 : 12,
+          },
+        },
+      },
+      y: {
+        ticks: {
+          font: {
+            size: window.innerWidth < 768 ? 10 : 12,
+          },
+        },
       },
     },
   };
 
   return (
-    <div className="h-[200px]">
+    <div className="h-[200px] md:h-[300px]">
       <Bar data={chartData} options={options} />
     </div>
   );

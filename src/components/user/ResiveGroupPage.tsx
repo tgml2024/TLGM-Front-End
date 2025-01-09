@@ -6,7 +6,7 @@ import { HiArchiveBoxArrowDown } from 'react-icons/hi2';
 
 import { getUserProfile } from '@/services/profileService';
 import {
-  deleteGroupFromDatabase,
+  deleteGroupsFromDatabase,
   getChannels,
   getGroupsFromDatabase,
   postGroupToDatabase,
@@ -31,6 +31,11 @@ const ResiveGroupPage = () => {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [channelSearchTerm, setChannelSearchTerm] = useState('');
+  const [selectedReceivingGroups, setSelectedReceivingGroups] = useState<
+    number[]
+  >([]);
+
   // Query user profile
   const { data: profileData } = useQuery({
     queryKey: ['userProfile'],
@@ -39,11 +44,15 @@ const ResiveGroupPage = () => {
 
   const userId = profileData?.user.userid.toString();
 
-  // Query receiving groups
-  const { data: groups = [] } = useQuery({
+  // Query receiving groups with better error handling
+  const { data: groups = [], refetch: refetchGroups } = useQuery({
     queryKey: ['receivingGroups', userId],
     queryFn: () => getGroupsFromDatabase(userId!),
     enabled: !!userId,
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   // Query channels
@@ -79,28 +88,49 @@ const ResiveGroupPage = () => {
       postGroupToDatabase(userId!, channel.title, channel.id),
   });
 
-  // Delete group mutation
+  // Delete single group mutation
   const deleteGroupMutation = useMutation({
-    mutationFn: () =>
-      deleteGroupFromDatabase(selectedGroup!.rg_id.toString(), userId!),
+    mutationFn: () => {
+      if (!selectedGroup || !userId) throw new Error('Missing data');
+      return deleteGroupsFromDatabase([selectedGroup.rg_id], userId);
+    },
+    onSuccess: () => {
+      toast.success('Delete group success');
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['receivingGroups', userId] });
+      // Reset UI state
+      setIsModalOpen(false);
+      setSelectedGroup(null);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Cannot delete group');
+    },
+  });
+
+  // Delete multiple groups mutation
+  const deleteGroupsMutation = useMutation({
+    mutationFn: (groupIds: number[]) => {
+      if (!userId) throw new Error('Missing userId');
+      return deleteGroupsFromDatabase(groupIds, userId);
+    },
+    onSuccess: () => {
+      toast.success('Delete groups success');
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['receivingGroups', userId] });
+      // Reset UI state
+      setIsModalOpen(false);
+      setSelectedReceivingGroups([]);
+    },
+    onError: (error: any) => {
+      toast.error(error?.message || 'Cannot delete groups');
+    },
   });
 
   // Handle mutations effects
   useEffect(() => {
     if (addGroupMutation.isSuccess) {
       toast.success('Add group success');
-      queryClient.setQueryData(
-        ['receivingGroups', userId],
-        (oldData: Group[] = []) => [
-          ...oldData,
-          {
-            rg_id: addGroupMutation.data.groupId,
-            userid: parseInt(userId!, 10),
-            rg_name: addGroupMutation.variables?.title,
-            rg_tid: addGroupMutation.variables?.id,
-          },
-        ]
-      );
+      queryClient.invalidateQueries({ queryKey: ['receivingGroups', userId] });
     }
     if (addGroupMutation.isError) {
       const error = addGroupMutation.error as any;
@@ -127,11 +157,7 @@ const ResiveGroupPage = () => {
   useEffect(() => {
     if (deleteGroupMutation.isSuccess) {
       toast.success('Delete group success');
-      queryClient.setQueryData(
-        ['receivingGroups', userId],
-        (oldData: Group[] = []) =>
-          oldData.filter((group) => group.rg_id !== selectedGroup?.rg_id)
-      );
+      queryClient.invalidateQueries({ queryKey: ['receivingGroups', userId] });
       setIsModalOpen(false);
       setSelectedGroup(null);
     }
@@ -139,6 +165,19 @@ const ResiveGroupPage = () => {
       toast.error('Cannot delete group');
     }
   }, [deleteGroupMutation.isSuccess, deleteGroupMutation.isError]);
+
+  // Update delete effect
+  useEffect(() => {
+    if (deleteGroupsMutation.isSuccess) {
+      toast.success('Delete groups success');
+      queryClient.invalidateQueries({ queryKey: ['receivingGroups', userId] });
+      setIsModalOpen(false);
+      setSelectedReceivingGroups([]);
+    }
+    if (deleteGroupsMutation.isError) {
+      toast.error('Cannot delete groups');
+    }
+  }, [deleteGroupsMutation.isSuccess, deleteGroupsMutation.isError]);
 
   // Update handlers to use mutations
   const handleAddGroup = (channel: Channel) => {
@@ -154,16 +193,16 @@ const ResiveGroupPage = () => {
     deleteGroupMutation.mutate();
   };
 
+  // Add delete selected groups handler
+  const handleDeleteSelectedGroups = () => {
+    if (selectedReceivingGroups.length === 0 || !userId) return;
+    deleteGroupsMutation.mutate(selectedReceivingGroups);
+  };
+
   // เปิด Modal ยืนยันการลบ
   const openDeleteModal = (group: Group) => {
     setSelectedGroup(group);
     setIsModalOpen(true);
-  };
-
-  // ปิด Modal ยืนยันการลบ
-  const closeDeleteModal = () => {
-    setIsModalOpen(false);
-    setSelectedGroup(null);
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -199,10 +238,12 @@ const ResiveGroupPage = () => {
       group.rg_tid.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Add new state for selected receiving groups
-  const [selectedReceivingGroups, setSelectedReceivingGroups] = useState<
-    number[]
-  >([]);
+  // Add this function to filter channels
+  const filteredChannels = channels.filter(
+    (channel: Channel) =>
+      channel.id.toLowerCase().includes(channelSearchTerm.toLowerCase()) ||
+      channel.title.toLowerCase().includes(channelSearchTerm.toLowerCase())
+  );
 
   // Add new handlers for receiving groups selection
   const handleSelectAllReceivingGroups = (checked: boolean) => {
@@ -223,6 +264,13 @@ const ResiveGroupPage = () => {
     }
   };
 
+  // Call refetch after successful mutations
+  useEffect(() => {
+    if (deleteGroupMutation.isSuccess || deleteGroupsMutation.isSuccess) {
+      refetchGroups();
+    }
+  }, [deleteGroupMutation.isSuccess, deleteGroupsMutation.isSuccess]);
+
   return (
     <div className="bg-gray-50 p-2 sm:p-6">
       <div className="max-w-7xl mx-auto">
@@ -234,37 +282,68 @@ const ResiveGroupPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-7">
           {/* Channels Section */}
           <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6 animate__animated animate__fadeInLeft">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2 sm:gap-4">
+            {/* Header with Scan title and Scan again button */}
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-base sm:text-lg font-semibold text-gray-700">
-                Scan
+                Scan channel
               </h2>
-              <div className="flex gap-2 w-full sm:w-auto">
-                {selectedChannels.length > 0 && (
-                  <button
-                    onClick={handleAddSelected}
-                    className="w-full sm:w-auto py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium bg-green-600 hover:bg-green-700 transition-colors"
-                  >
-                    Add ({selectedChannels.length})
-                  </button>
-                )}
-                <button
-                  onClick={() => fetchChannels()}
-                  disabled={isFetchingChannels}
-                  className={`w-full sm:w-auto py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium transition-colors ${
-                    isFetchingChannels
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700'
-                  }`}
+              <button
+                onClick={() => fetchChannels()}
+                disabled={isFetchingChannels}
+                className={`py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium transition-colors ${
+                  isFetchingChannels
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                {isFetchingChannels
+                  ? 'Loading...'
+                  : channels.length > 0
+                  ? 'Scan again'
+                  : 'Scan'}
+              </button>
+            </div>
+
+            {/* Search input */}
+            <div className="mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by group ID or name..."
+                  value={channelSearchTerm}
+                  onChange={(e) => setChannelSearchTerm(e.target.value)}
+                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {isFetchingChannels
-                    ? 'Loading...'
-                    : channels.length > 0
-                    ? 'Scan again'
-                    : 'Scan'}
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
               </div>
             </div>
 
+            {/* Add Selected button - show only when channels are selected */}
+            {selectedChannels.length > 0 && (
+              <div className="mb-4">
+                <button
+                  onClick={handleAddSelected}
+                  className="w-auto py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium bg-green-600 hover:bg-green-700 transition-colors"
+                >
+                  Add ({selectedChannels.length})
+                </button>
+              </div>
+            )}
+
+            {/* Table section */}
             <div className="border border-gray-200 rounded-lg">
               <div className="max-h-[400px] sm:max-h-[500px] overflow-auto">
                 <div className="overflow-x-auto -mx-3 sm:mx-0">
@@ -299,8 +378,8 @@ const ResiveGroupPage = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {channels.length > 0 ? (
-                        channels.map(
+                      {filteredChannels.length > 0 ? (
+                        filteredChannels.map(
                           (channel: { id: string; title: string }) => (
                             <tr key={channel.id} className="hover:bg-gray-50">
                               <td className="px-4 py-3 text-sm">
@@ -359,7 +438,9 @@ const ResiveGroupPage = () => {
                             colSpan={4}
                             className="px-4 py-8 text-center text-gray-500"
                           >
-                            No channel found
+                            {channels.length > 0
+                              ? 'No matching channels found'
+                              : 'No channel found'}
                           </td>
                         </tr>
                       )}
@@ -376,28 +457,41 @@ const ResiveGroupPage = () => {
               <h2 className="text-base sm:text-lg font-semibold text-gray-700">
                 Receiving groups
               </h2>
-              <div className="w-full sm:w-64 relative">
-                <input
-                  type="text"
-                  placeholder="Search groups..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              <div className="flex gap-2 w-full sm:w-auto">
+                {selectedReceivingGroups.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setSelectedGroup(null);
+                    }}
+                    className="w-auto py-1 px-3 text-sm rounded-lg text-white font-medium bg-red-600 hover:bg-red-700 transition-colors"
+                  >
+                    Delete ({selectedReceivingGroups.length})
+                  </button>
+                )}
+                <div className="w-full sm:w-64 relative">
+                  <input
+                    type="text"
+                    placeholder="Search groups..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   />
-                </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
 
@@ -492,13 +586,17 @@ const ResiveGroupPage = () => {
                         ))
                       ) : (
                         <tr>
-                          <td
-                            colSpan={3}
-                            className="px-4 py-8 text-center text-gray-500"
-                          >
-                            {groups.length > 0
-                              ? 'No matching groups found'
-                              : 'No group found'}
+                          <td colSpan={4} className="px-4 py-8 text-center">
+                            <div className="flex flex-col items-center justify-center gap-2">
+                              <HiArchiveBoxArrowDown className="w-8 h-8 text-gray-400" />
+                              <p className="text-gray-500">
+                                {searchTerm
+                                  ? 'ไม่พบกลุ่มที่ค้นหา'
+                                  : groups.length > 0
+                                  ? 'ไม่พบข้อมูลที่ตรงกับเงื่อนไข'
+                                  : 'คุณยังไม่มีกลุ่มที่เพิ่มไว้ กรุณาเพิ่มกลุ่มใหม่'}
+                              </p>
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -515,7 +613,7 @@ const ResiveGroupPage = () => {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="fixed inset-0 bg-black/50"
-              onClick={closeDeleteModal}
+              onClick={() => setIsModalOpen(false)}
             />
             <div className="relative bg-white dark:bg-gray-800 w-full max-w-[90%] sm:max-w-md rounded-3xl shadow-2xl animate__animated animate__zoomIn">
               <div className="p-4 sm:p-8">
@@ -538,11 +636,10 @@ const ResiveGroupPage = () => {
                     Confirm Delete
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Are you sure you want to delete group{' '}
-                    <span className="font-semibold text-gray-800 dark:text-gray-100">
-                      {selectedGroup?.rg_name}
-                    </span>{' '}
-                    ? <br />
+                    {selectedGroup
+                      ? `Are you sure you want to delete group ${selectedGroup.rg_name}?`
+                      : `Are you sure you want to delete ${selectedReceivingGroups.length} selected groups?`}
+                    <br />
                     This action cannot be undone
                   </p>
                 </div>
@@ -551,14 +648,18 @@ const ResiveGroupPage = () => {
                   <button
                     className="w-full px-4 py-2.5 text-sm text-gray-700 bg-gray-100 
                     rounded-2xl hover:bg-gray-200 transition-all duration-200 font-medium"
-                    onClick={closeDeleteModal}
+                    onClick={() => setIsModalOpen(false)}
                   >
                     Cancel
                   </button>
                   <button
                     className="w-full px-4 py-2.5 text-sm text-white bg-red-500 hover:bg-red-600
                     rounded-2xl transition-all duration-200 font-medium"
-                    onClick={handleDeleteGroup}
+                    onClick={
+                      selectedGroup
+                        ? handleDeleteGroup
+                        : handleDeleteSelectedGroups
+                    }
                   >
                     Delete
                   </button>
