@@ -1,12 +1,14 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
 import {
+  BarController,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
   ChartData,
   Legend,
   LinearScale,
+  LineController,
   LineElement,
   PointElement,
   Title,
@@ -28,6 +30,8 @@ ChartJS.register(
   PointElement,
   LineElement,
   BarElement,
+  LineController,
+  BarController,
   Title,
   Tooltip,
   Legend
