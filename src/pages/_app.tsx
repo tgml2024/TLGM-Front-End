@@ -1,5 +1,9 @@
 import './globals.css';
 import '../styles/UserSidebar.styles.css';
+import '../styles/UserSetting.styles.css';
+import '../styles/Forward.styles.css';
+import 'animate.css';
+import 'react-phone-number-input/style.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import axios from 'axios';

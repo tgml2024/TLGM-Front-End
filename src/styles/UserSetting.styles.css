@@ -1,0 +1,52 @@
+/* Custom styles for PhoneInput */
+.PhoneInput {
+  /* Container */
+  display: flex;
+  align-items: center;
+}
+
+.PhoneInputCountry {
+  /* Country selector */
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin-right: 0.5rem;
+  padding-right: 0.5rem;
+  border-right: 1px solid #E5E7EB; /* gray-300 */
+}
+
+.PhoneInputCountrySelect {
+  /* Country select dropdown */
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.PhoneInputCountryIcon {
+  /* Country icon */
+  width: 2rem;
+  height: 1.5rem;
+}
+
+.PhoneInputInput {
+  /* Input field */
+  flex: 1;
+  border: none;
+  padding: 0;
+  outline: none;
+  background: none;
+}
+
+.PhoneInputInput:focus {
+  /* Remove default focus style */
+  outline: none;
+  border: none;
+  box-shadow: none;
+}

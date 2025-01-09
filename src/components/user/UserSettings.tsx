@@ -1,6 +1,3 @@
-import 'react-phone-number-input/style.css';
-import 'animate.css';
-
 import {
   Cog6ToothIcon,
   HashtagIcon,
