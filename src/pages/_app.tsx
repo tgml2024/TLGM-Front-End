@@ -2,6 +2,8 @@ import './globals.css';
 import '../styles/UserSidebar.styles.css';
 import '../styles/UserSetting.styles.css';
 import '../styles/Forward.styles.css';
+import '../styles/userlayout.styles.css';
+import '../styles/Login.style.css';
 import 'animate.css';
 import 'react-phone-number-input/style.css';
 
