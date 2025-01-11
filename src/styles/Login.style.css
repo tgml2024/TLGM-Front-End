@@ -1,0 +1,73 @@
+@keyframes loginGradient {
+  0% { 
+    background-position: -100% 50%;
+    background-size: 400% 400%;
+  }
+  50% { 
+    background-position: 200% 50%;
+    background-size: 200% 200%;
+  }
+  100% { 
+    background-position: -100% 50%;
+    background-size: 400% 400%;
+  }
+}
+
+@keyframes loginShine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.login-animate-gradient {
+  background: radial-gradient(ellipse farthest-corner at right bottom,
+    #ffffff 0%,
+    #f8f8f8 20%,
+    #f0f0f0 40%,
+    #e8e8e8 60%,
+    #e0e0e0 100%
+  ),
+  radial-gradient(ellipse farthest-corner at left top,
+    #ffffff 0%,
+    #fafafa 30%,
+    #f5f5f5 60%,
+    #f0f0f0 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-animate-gradient::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(212, 175, 55, 0.05),
+    rgba(255, 255, 255, 0.1)
+  );
+  pointer-events: none;
+}
+
+/* Gold shimmer effect */
+.login-gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #D4AF37 0%,
+    #F4CD6F 25%,
+    #D4AF37 50%,
+    #B38B59 75%,
+    #D4AF37 100%
+  );
+  background-size: 200% auto;
+  animation: loginShine 3s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(212,175,55,0.3);
+}

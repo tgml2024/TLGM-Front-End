@@ -1,0 +1,13 @@
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 8s linear infinite;
+  background-size: 1000px 100%;
+}
