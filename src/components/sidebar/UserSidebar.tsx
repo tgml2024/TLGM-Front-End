@@ -2,6 +2,7 @@ import {
   ArrowLeftIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowRightIcon,
+  ArrowUturnRightIcon,
   Bars3Icon,
   ChartBarIcon,
   CheckBadgeIcon,
@@ -29,9 +30,9 @@ const navigation: NavItem[] = [
   { name: 'Home', icon: HomeIcon, path: '/user' },
   { name: 'Dashboard', icon: ChartBarIcon, path: '/user/dashboard' },
   { name: 'Confirm Telegram', icon: CheckBadgeIcon, path: '/user/confirm' },
-  { name: 'Sanding Group', icon: ArrowRightIcon, path: '/user/sandinggroup' },
-  { name: 'Resive Group', icon: ArrowLeftIcon, path: '/user/resivegroup' },
-  { name: 'Forward Message', icon: PaperAirplaneIcon, path: '/user/forward' },
+  { name: 'Sender Group', icon: ArrowRightIcon, path: '/user/sandinggroup' },
+  { name: 'Target Group', icon: ArrowLeftIcon, path: '/user/resivegroup' },
+  { name: 'Forward Message', icon: ArrowUturnRightIcon, path: '/user/forward' },
   { name: 'Send Message', icon: PaperAirplaneIcon, path: '/user/sandmessage' },
 ];
 
@@ -131,7 +132,7 @@ const UserSidebar = () => {
     setShowSettingsSubmenu(false);
   };
 
-  // เพิ่ม useEffect �พื่อสุ่ม animations ใหม่ทุกๆ 3 วินาที
+  // เพิ่ม useEffect พื่อสุ่ม animations ใหม่ทุกๆ 3 วินาที
   useEffect(() => {
     const updateAnimations = () => {
       const newAnimations = navigation.reduce(
@@ -153,7 +154,7 @@ const UserSidebar = () => {
   return (
     <>
       {/* Top Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 z-40 flex items-center px-4">
+      <div className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-[#050C9C] via-[#050C9C] to-[#3572EF] dark:from-[#050C9C] dark:via-[#050C9C] dark:to-[#3572EF] border-b border-[#3572EF]/20 z-40 flex items-center px-4">
         {/* Mobile Toggle */}
         <button
           className="sm:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -191,7 +192,7 @@ const UserSidebar = () => {
                 }
               }}
             >
-              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-bold text-white">
+              <div className="w-8 h-8 rounded-full bg-[#050C9C] flex items-center justify-center text-sm font-bold text-white">
                 {getInitials(userProfile?.user.name || '')}
               </div>
               <span className="hidden sm:inline text-sm font-medium text-white">
@@ -201,19 +202,19 @@ const UserSidebar = () => {
 
             {/* Profile Dropdown Menu */}
             {showProfileDropdown && (
-              <div className="absolute right-0 mt-3 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="absolute right-0 mt-3 w-64 bg-gradient-to-b from-[#1a1a1a] to-[#000000] rounded-lg shadow-lg border border-gray-800 overflow-hidden">
                 {!showSettingsSubmenu ? (
                   // Main Menu
                   <div className="py-2">
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                    <div className="px-4 py-3 border-b border-gray-800">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-[#050C9C] flex items-center justify-center">
                           <span className="text-white font-medium">
                             {getInitials(userProfile?.user.name || '')}
                           </span>
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                          <p className="text-sm font-medium text-white">
                             {userProfile?.user.name}
                           </p>
                         </div>
@@ -221,15 +222,15 @@ const UserSidebar = () => {
                     </div>
 
                     <button
-                      className="w-full flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                      className="w-full flex items-center px-4 py-3 text-sm text-gray-300 hover:bg-gray-800 transition-colors duration-150"
                       onClick={() => setShowSettingsSubmenu(true)}
                     >
-                      <Cog6ToothIcon className="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" />
+                      <Cog6ToothIcon className="w-5 h-5 mr-3 text-gray-400" />
                       <span>Settings</span>
                     </button>
 
                     <button
-                      className="w-full flex items-center px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"
+                      className="w-full flex items-center px-4 py-3 text-sm text-red-400 hover:bg-gray-800 transition-colors duration-150"
                       onClick={() => {
                         handleLogout();
                         setShowProfileDropdown(false);
@@ -261,8 +262,8 @@ const UserSidebar = () => {
                         }}
                       >
                         <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3">
-                            <Cog6ToothIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          <div className="w-8 h-8 rounded-full bg-[#A7E6FF] dark:bg-[#050C9C]/30 flex items-center justify-center mr-3">
+                            <Cog6ToothIcon className="w-4 h-4 text-[#050C9C] dark:text-[#3ABEF9]" />
                           </div>
                           <div className="text-left">
                             <p className="font-medium">Profile Settings</p>
@@ -281,8 +282,8 @@ const UserSidebar = () => {
                         }}
                       >
                         <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mr-3">
-                            <KeyIcon className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                          <div className="w-8 h-8 rounded-full bg-[#A7E6FF] dark:bg-[#050C9C]/30 flex items-center justify-center mr-3">
+                            <KeyIcon className="w-4 h-4 text-[#050C9C] dark:text-[#3ABEF9]" />
                           </div>
                           <div className="text-left">
                             <p className="font-medium">Change Password</p>
@@ -307,9 +308,11 @@ const UserSidebar = () => {
           fixed sm:static inset-y-0 left-0 z-30
           transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
           sm:translate-x-0 transition-all duration-300 ease-in-out
-          bg-white dark:bg-gray-800 text-gray-700 dark:text-white 
+          bg-gradient-to-b from-[#050C9C] via-[#3572EF]/90 to-[#050C9C]
+          dark:from-[#050C9C] dark:via-[#050C9C] dark:to-[#050C9C]
+          text-gray-700 dark:text-white 
           ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col
-          border-r border-gray-200 dark:border-gray-700
+          border-r border-[#3572EF]/20
           mt-16 bottom-0
         `}
       >
@@ -326,8 +329,8 @@ const UserSidebar = () => {
                   flex items-center px-4 py-2 text-sm group
                   ${
                     router.pathname === item.path
-                      ? 'bg-gray-100 dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-600'
-                      : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'bg-[#A7E6FF]/20 dark:bg-[#050C9C]/20 text-[#050C9C] dark:text-[#3ABEF9] border-l-4 border-[#3572EF]'
+                      : 'hover:bg-[#A7E6FF]/10 dark:hover:bg-[#050C9C]/10'
                   }
                   cursor-pointer transition-colors duration-200
                 `}

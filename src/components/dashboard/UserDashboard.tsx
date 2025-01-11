@@ -46,7 +46,6 @@ const Dashboard: React.FC = () => {
         const userData = JSON.parse(userDataStr);
         setUserId(userData.id.toString());
       } catch (err) {
-        console.error('Error parsing user data:', err);
         toast.error('Failed to load user data');
       }
     }

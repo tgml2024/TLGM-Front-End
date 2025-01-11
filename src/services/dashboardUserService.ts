@@ -88,76 +88,56 @@ export const getDashboardDay = async (
   date: string,
   userId: string
 ): Promise<DashboardDayResponse> => {
-  try {
-    const response = await axios.get(`${API_URL}/api/v1/dashboard-user/day`, {
-      params: {
-        date,
-        userId,
-      },
-      headers: getHeaders(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard day data:', error);
-    throw error;
-  }
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-user/day`, {
+    params: {
+      date,
+      userId,
+    },
+    headers: getHeaders(),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 export const getDashboardMonth = async (
   month: string,
   userId: string
 ): Promise<DashboardMonthResponse> => {
-  try {
-    const response = await axios.get(`${API_URL}/api/v1/dashboard-user/month`, {
-      params: {
-        month,
-        userId,
-      },
-      headers: getHeaders(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard month data:', error);
-    throw error;
-  }
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-user/month`, {
+    params: {
+      month,
+      userId,
+    },
+    headers: getHeaders(),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 export const getDashboardYear = async (
   year: string,
   userId: string
 ): Promise<DashboardYearResponse> => {
-  try {
-    const response = await axios.get(`${API_URL}/api/v1/dashboard-user/year`, {
-      params: {
-        year,
-        userId,
-      },
-      headers: getHeaders(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard year data:', error);
-    throw error;
-  }
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-user/year`, {
+    params: {
+      year,
+      userId,
+    },
+    headers: getHeaders(),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 export const getDashboardTotal = async (
   userId: string
 ): Promise<DashboardTotalResponse> => {
-  try {
-    const response = await axios.get(`${API_URL}/api/v1/dashboard-user/total`, {
-      params: {
-        userId,
-      },
-      headers: getHeaders(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard total data:', error);
-    throw error;
-  }
+  const response = await axios.get(`${API_URL}/api/v1/dashboard-user/total`, {
+    params: {
+      userId,
+    },
+    headers: getHeaders(),
+    withCredentials: true,
+  });
+  return response.data;
 };
