@@ -126,6 +126,7 @@ const UserTelegramSettings = () => {
 
   // Step 2: ยืนยัน OTP
   const handleVerifyOTP = async (data: FormData) => {
+    const loadingToast = toast.loading('Verifying OTP...');
     try {
       await verifyCode(
         data.apiId,
@@ -139,11 +140,16 @@ const UserTelegramSettings = () => {
       setUserProfile(profileData.user);
       setValue('telegram_auth', profileData.user.telegram_auth);
 
+      toast.dismiss(loadingToast);
       toast.success('Login successful!');
       setIsClientStarted(true);
       setIsAuthenticated(true);
+      setActiveApiId(data.apiId);
     } catch (error: any) {
+      toast.dismiss(loadingToast);
       toast.error(error.response?.data?.error || 'Failed to verify OTP');
+      // Reset OTP field on error
+      setValue('otpCode', '');
     }
   };
 
@@ -158,31 +164,96 @@ const UserTelegramSettings = () => {
         await handleVerifyOTP(data);
       }
     } catch (error) {
-      toast.error('Error in handleStepSubmit.');
+      toast.error('Error in process.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const getButtonLabel = () => {
-    if (step === 0)
+    if (step === 0) {
       return (
-        <>
-          <FaPlay className="mr-2" /> Start
-        </>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="group relative px-8 py-3 text-black font-medium rounded-xl
+            overflow-hidden transition-all duration-300
+            hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]
+            transform hover:scale-105
+            disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {/* Button background with animated gradient */}
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#D4AF37]
+            transition-transform duration-300 group-hover:scale-110"
+          ></div>
+
+          {/* Button content */}
+          <div className="relative flex items-center gap-3">
+            <FaPlay className="text-lg" />
+            <span className="font-semibold tracking-wider">Start</span>
+          </div>
+
+          {/* Animated border */}
+          <div
+            className="absolute inset-0 border-2 border-[#FFD700] rounded-xl
+            opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </button>
       );
-    if (step === 1)
+    }
+    if (step === 1) {
       return (
-        <>
-          <FaPaperPlane className="mr-2" /> Send OTP
-        </>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="group relative px-8 py-3 text-black font-medium rounded-xl
+            overflow-hidden transition-all duration-300
+            hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]
+            transform hover:scale-105
+            disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#D4AF37]
+            transition-transform duration-300 group-hover:scale-110"
+          ></div>
+          <div className="relative flex items-center gap-3">
+            <FaPaperPlane className="text-lg" />
+            <span className="font-semibold tracking-wider">Send OTP</span>
+          </div>
+          <div
+            className="absolute inset-0 border-2 border-[#FFD700] rounded-xl
+            opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </button>
       );
-    if (step === 2)
+    }
+    if (step === 2) {
       return (
-        <>
-          <FaCheck className="mr-2" /> Confirm OTP
-        </>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="group relative px-8 py-3 text-black font-medium rounded-xl
+            overflow-hidden transition-all duration-300
+            hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]
+            transform hover:scale-105
+            disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <div
+            className="absolute inset-0 bg-gradient-to-r from-[#FFD700] to-[#D4AF37]
+            transition-transform duration-300 group-hover:scale-110"
+          ></div>
+          <div className="relative flex items-center gap-3">
+            <FaCheck className="text-lg" />
+            <span className="font-semibold tracking-wider">Confirm OTP</span>
+          </div>
+          <div
+            className="absolute inset-0 border-2 border-[#FFD700] rounded-xl
+            opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+          ></div>
+        </button>
       );
+    }
     return '';
   };
 
@@ -201,40 +272,47 @@ const UserTelegramSettings = () => {
             <React.Fragment key={index}>
               <div className="flex flex-col items-center relative">
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transform transition-all duration-300 ease-in-out ${
-                    step >= index
-                      ? 'bg-indigo-600 text-white scale-110 shadow-lg'
-                      : 'bg-gray-100 text-gray-400 scale-100'
-                  }`}
-                >
-                  <div
-                    className={`text-lg transition-transform duration-300 ${
-                      step >= index ? 'scale-110' : 'scale-100'
+                  className={`w-12 h-12 rounded-full flex items-center justify-center 
+                    transform transition-all duration-300 ease-in-out
+                    ${
+                      step >= index
+                        ? 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37] text-black scale-110 shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                        : 'bg-[#1A1A1A] text-[#FFD700]/50 border-2 border-[#FFD700]/20'
                     }`}
-                  >
-                    {s.icon}
-                  </div>
+                >
+                  {s.icon}
                 </div>
-                <span
-                  className={`text-sm mt-3 font-medium transition-all duration-300 ${
-                    step >= index
-                      ? 'text-indigo-600 transform translate-y-0 opacity-100'
-                      : 'text-gray-400 transform -translate-y-1 opacity-70'
-                  }`}
+                <p
+                  className={`mt-2 text-sm font-medium
+                  ${step >= index ? 'text-[#FFD700]' : 'text-[#FFD700]/50'}`}
                 >
                   {s.label}
-                </span>
-              </div>
-              {index < steps.length - 1 && (
-                <div className="flex-1 mx-4 flex items-center">
-                  <div className="h-1 w-full relative">
-                    <div className="absolute inset-0 bg-gray-200 rounded-full"></div>
+                </p>
+                {/* Progress line */}
+                {index < steps.length - 1 && (
+                  <div className="absolute top-6 left-full w-full h-[2px] transform -translate-y-1/2">
                     <div
-                      className={`absolute inset-0 bg-indigo-600 rounded-full transition-all duration-500 ease-out ${
-                        step > index ? 'w-full' : 'w-0'
+                      className={`h-full transition-all duration-300 ease-in-out
+                      ${
+                        step > index
+                          ? 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37]'
+                          : 'bg-[#1A1A1A]'
                       }`}
                     />
                   </div>
+                )}
+              </div>
+              {/* Spacer between steps */}
+              {index < steps.length - 1 && (
+                <div className="w-20 sm:w-32 h-[2px] bg-[#1A1A1A] mx-4">
+                  <div
+                    className={`h-full transition-all duration-300 ease-in-out
+                      ${
+                        step > index
+                          ? 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37]'
+                          : ''
+                      }`}
+                  />
                 </div>
               )}
             </React.Fragment>
@@ -279,40 +357,162 @@ const UserTelegramSettings = () => {
   // Add new component to show working status
   const renderWorkingStatus = () => {
     return (
-      <div className="mb-8 p-6 bg-green-50 rounded-lg border-2 border-green-200 relative overflow-hidden">
-        {/* Background pulse effect */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-green-400 opacity-5 animate-pulse"></div>
+      <div className="animate__animated animate__fadeInDown">
+        <div
+          className="mb-8 p-8 bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A] rounded-2xl 
+          border-2 border-[#FFD700]/20 relative overflow-hidden
+          shadow-[0_0_50px_rgba(0,0,0,0.3)]"
+        >
+          {/* Animated background effects */}
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/10 to-transparent"></div>
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#FFD700]/10 rounded-full blur-3xl animate-pulse"></div>
+            <div
+              className="absolute -bottom-32 -left-32 w-64 h-64 bg-[#FFD700]/10 rounded-full blur-3xl animate-pulse"
+              style={{ animationDelay: '1s' }}
+            ></div>
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10">
+            {/* Status indicator */}
+            <div className="flex items-center justify-center space-x-6 mb-8">
+              <div className="flex space-x-3">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="relative">
+                    <div
+                      className="absolute inset-0 bg-[#FFD700] rounded-full blur-md animate-pulse"
+                      style={{ animationDelay: `${i * 0.3}s` }}
+                    ></div>
+                    <div
+                      className="w-4 h-4 bg-gradient-to-r from-[#FFD700] to-[#D4AF37] rounded-full 
+                      shadow-[0_0_15px_rgba(212,175,55,0.5)] relative"
+                    ></div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center space-x-3">
+                <FaTelegram
+                  className="text-3xl text-[#FFD700] animate-bounce"
+                  style={{ animationDuration: '2s' }}
+                />
+                <h3
+                  className="text-2xl font-bold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] 
+                  text-transparent bg-clip-text tracking-wider"
+                >
+                  Telegram Client Active
+                </h3>
+              </div>
+            </div>
+
+            {/* API Info Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <div className="group">
+                <div
+                  className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+                  transform transition-all duration-300 group-hover:scale-105
+                  group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className="p-3 bg-gradient-to-br from-[#FFD700] to-[#D4AF37] rounded-lg
+                      shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                    >
+                      <svg
+                        className="w-6 h-6 text-black"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                        API Identifier
+                      </p>
+                      <p className="text-[#FFD700] text-lg font-mono font-bold tracking-wider">
+                        {activeApiId}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="group">
+                <div
+                  className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+                  transform transition-all duration-300 group-hover:scale-105
+                  group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-lg
+                      shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                    >
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                        Connection Status
+                      </p>
+                      <p className="text-green-500 text-lg font-bold tracking-wider flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        Connected
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Content with enhanced animations */}
-        <div className="relative z-10">
-          <div className="flex items-center justify-center space-x-4 mb-6">
-            {/* Multiple animated dots */}
-            <div className="flex space-x-2">
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  className="w-3 h-3 bg-green-500 rounded-full"
-                  style={{
-                    animation: `pulse 1.5s ease-in-out ${i * 0.3}s infinite`,
-                  }}
-                />
-              ))}
-            </div>
-            <h3 className="text-xl font-semibold text-green-700">
-              Telegram Client is working
-            </h3>
-          </div>
+        {/* Stop Client Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleStopClient}
+            className="group relative px-8 py-3 text-white font-medium rounded-xl
+              overflow-hidden transition-all duration-300
+              hover:shadow-[0_0_30px_rgba(220,38,38,0.3)]
+              transform hover:scale-105"
+          >
+            {/* Button background with animated gradient */}
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700
+              transition-transform duration-300 group-hover:scale-110"
+            ></div>
 
-          {/* API ID display with fade-in and slide effect */}
-          <div className="flex justify-center items-center space-x-3">
-            <div className="px-4 py-2 bg-green-100 rounded-lg">
-              <p className="text-center text-green-700 font-medium">
-                API ID: <span className="font-mono">{activeApiId}</span>
-              </p>
+            {/* Button content */}
+            <div className="relative flex items-center gap-3">
+              <FaStop className="text-lg" />
+              <span className="font-semibold tracking-wider">Stop Client</span>
             </div>
-          </div>
+
+            {/* Animated border */}
+            <div
+              className="absolute inset-0 border-2 border-red-500 rounded-xl
+              opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+          </button>
         </div>
       </div>
     );
@@ -320,182 +520,155 @@ const UserTelegramSettings = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="space-y-6">
-        <div className="w-full p-6 bg-white shadow-md rounded-md">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-10 text-center flex items-center justify-center gap-3 animate__animated animate__fadeIn">
-            <FaTelegram className="text-[#0088cc]" />
-            Start Telegram Client
+      <div className="bg-white p-4 sm:p-8">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-5xl font-bold text-center mb-6 sm:mb-12 flex items-center justify-center gap-3 animate__animated animate__fadeIn">
+            <FaTelegram
+              className="text-[#FFD700] text-3xl sm:text-5xl animate-pulse 
+              drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+            />
+            <span
+              className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text 
+              drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]
+              hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]
+              transition-all duration-300
+              tracking-wider
+              font-extrabold
+              transform hover:scale-105
+              border-b-4 border-[#D4AF37]/20
+              pb-2"
+            >
+              Start Telegram Client
+            </span>
           </h2>
 
-          {/* Status Section */}
-          {userProfile?.telegram_auth === 1 ? (
-            <div className="animate__animated animate__fadeInDown">
-              {renderWorkingStatus()}
-            </div>
-          ) : (
-            <div className="animate__animated animate__fadeInDown">
-              {renderStepper()}
-            </div>
-          )}
-
-          {/* Form Section */}
-          {userProfile?.telegram_auth === 0 && (
-            <form
-              onSubmit={handleSubmit(handleStepSubmit)}
-              className="animate__animated animate__fadeInUp"
-            >
-              {step === 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-4">
-                    <label
-                      htmlFor="apiId"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      API ID
-                    </label>
-                    <input
-                      {...register('apiId', { required: 'API ID is required' })}
-                      id="apiId"
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors.apiId && (
-                      <p className="text-red-500 text-sm">
-                        {errors.apiId.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="apiHash"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      API Hash
-                    </label>
-                    <input
-                      {...register('apiHash', {
-                        required: 'API Hash is required',
-                      })}
-                      id="apiHash"
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                    {errors.apiHash && (
-                      <p className="text-red-500 text-sm">
-                        {errors.apiHash.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {step === 1 && (
-                <div className="mb-4">
-                  <label
-                    htmlFor="phoneNumber"
-                    className="block text-sm font-medium text-gray-700 mb-2"
-                  >
-                    Phone Number
-                  </label>
-                  <PhoneInput
-                    international
-                    defaultCountry="TH"
-                    value={methods.watch('phoneNumber')}
-                    onChange={(value) =>
-                      methods.setValue('phoneNumber', value || '')
-                    }
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    error={(() => {
-                      const phoneNumber = methods.watch('phoneNumber');
-                      if (!phoneNumber) return 'Phone number required';
-                      if (!isValidPhoneNumber(phoneNumber))
-                        return 'Invalid phone number';
-                      return undefined;
-                    })()}
-                  />
-                  {methods.formState.errors.phoneNumber && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {methods.formState.errors.phoneNumber.message}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="mb-4">
-                  <label
-                    htmlFor="otpCode"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    OTP Code:
-                  </label>
-                  <input
-                    {...register('otpCode', {
-                      required: 'OTP Code is required',
-                    })}
-                    id="otpCode"
-                    type="text"
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                  {errors.otpCode && (
-                    <p className="text-red-500 text-sm">
-                      {errors.otpCode.message}
-                    </p>
-                  )}
-                </div>
-              )}
-            </form>
-          )}
-
-          {/* ปรับปรุงการแสดงปุ่ม */}
-          <div className="flex justify-center gap-4">
-            {userProfile?.telegram_auth === 0 ? (
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`mt-4 w-full md:w-auto md:min-w-[200px] inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                  isLoading
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700'
-                }`}
-                onClick={handleSubmit(handleStepSubmit)}
-              >
-                {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Starting....
-                  </>
-                ) : (
-                  getButtonLabel()
-                )}
-              </button>
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
+            {/* Status Section */}
+            {userProfile?.telegram_auth === 1 ? (
+              renderWorkingStatus()
             ) : (
-              <button
-                type="button"
-                onClick={handleStopClient}
-                className="mt-4 w-full md:w-auto md:min-w-[200px] inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-              >
-                <FaStop className="mr-2" /> Stop
-              </button>
+              <div className="animate__animated animate__fadeInDown">
+                {renderStepper()}
+                <form
+                  onSubmit={handleSubmit(handleStepSubmit)}
+                  className="animate__animated animate__fadeInUp"
+                >
+                  {step === 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="mb-4">
+                        <label
+                          htmlFor="apiId"
+                          className="block text-sm font-medium text-[#FFD700] mb-2"
+                        >
+                          API ID
+                        </label>
+                        <input
+                          {...register('apiId', {
+                            required: 'API ID is required',
+                          })}
+                          id="apiId"
+                          type="text"
+                          className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                            text-[#FFD700] text-lg font-medium
+                            focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                            placeholder-[#8B6B43]
+                            transition-all duration-300
+                            hover:border-[#FFD700]/50"
+                        />
+                        {errors.apiId && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.apiId.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="mb-4">
+                        <label
+                          htmlFor="apiHash"
+                          className="block text-sm font-medium text-[#FFD700] mb-2"
+                        >
+                          API Hash
+                        </label>
+                        <input
+                          {...register('apiHash', {
+                            required: 'API Hash is required',
+                          })}
+                          id="apiHash"
+                          type="text"
+                          className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                            text-[#FFD700] text-lg font-medium
+                            focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                            placeholder-[#8B6B43]
+                            transition-all duration-300
+                            hover:border-[#FFD700]/50"
+                        />
+                        {errors.apiHash && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {errors.apiHash.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {step === 1 && (
+                    <div className="mb-4">
+                      <label
+                        htmlFor="phoneNumber"
+                        className="block text-sm font-medium text-[#FFD700] mb-2"
+                      >
+                        Phone Number
+                      </label>
+                      <PhoneInput
+                        international
+                        defaultCountry="TH"
+                        value={methods.getValues('phoneNumber')}
+                        onChange={(value) =>
+                          setValue('phoneNumber', value || '')
+                        }
+                        className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                          text-[#FFD700] text-lg font-medium
+                          focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                          placeholder-[#8B6B43]
+                          transition-all duration-300
+                          hover:border-[#FFD700]/50"
+                      />
+                    </div>
+                  )}
+
+                  {step === 2 && (
+                    <div className="mb-4">
+                      <label
+                        htmlFor="otpCode"
+                        className="block text-sm font-medium text-[#FFD700] mb-2"
+                      >
+                        OTP Code
+                      </label>
+                      <input
+                        {...register('otpCode', {
+                          required: 'OTP Code is required',
+                        })}
+                        id="otpCode"
+                        type="text"
+                        className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                          text-[#FFD700] text-lg font-medium
+                          focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                          placeholder-[#8B6B43]
+                          transition-all duration-300
+                          hover:border-[#FFD700]/50"
+                      />
+                      {errors.otpCode && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.otpCode.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex justify-center mt-6">
+                    {getButtonLabel()}
+                  </div>
+                </form>
+              </div>
             )}
           </div>
         </div>

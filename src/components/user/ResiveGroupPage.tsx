@@ -272,337 +272,330 @@ const ResiveGroupPage = () => {
   }, [deleteGroupMutation.isSuccess, deleteGroupsMutation.isSuccess]);
 
   return (
-    <div className="bg-gray-50 p-2 sm:p-6">
+    <div className="bg-white p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-xl sm:text-3xl font-bold text-center text-gray-800 mb-4 sm:mb-8 flex items-center justify-center gap-2 animate__animated animate__fadeIn">
-          <HiArchiveBoxArrowDown className="text-2xl sm:text-4xl text-blue-600" />
-          Manage receiving groups
+        <h1 className="text-2xl sm:text-5xl font-bold text-center mb-6 sm:mb-12 flex items-center justify-center gap-3 animate__animated animate__fadeIn">
+          <HiArchiveBoxArrowDown
+            className="text-[#FFD700] text-3xl sm:text-5xl animate-pulse 
+            drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+          />
+          <span
+            className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text 
+            drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]
+            hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]
+            transition-all duration-300
+            tracking-wider
+            font-extrabold
+            transform hover:scale-105
+            border-b-4 border-[#D4AF37]/20
+            pb-2"
+          >
+            Manage Receiving Groups
+          </span>
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Channels Section */}
-          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6 animate__animated animate__fadeInLeft">
-            {/* Header with Scan title and Scan again button */}
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-700">
-                Scan channel
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text">
+                Scan Channel
               </h2>
               <button
                 onClick={() => fetchChannels()}
                 disabled={isFetchingChannels}
-                className={`py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium transition-colors ${
-                  isFetchingChannels
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                className={`py-2 px-4 text-sm rounded-lg text-white font-medium transition-all duration-300 
+                  ${
+                    isFetchingChannels
+                      ? 'bg-gray-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37] hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transform hover:scale-105'
+                  }`}
               >
                 {isFetchingChannels
                   ? 'Loading...'
                   : channels.length > 0
-                  ? 'Scan again'
+                  ? 'Scan Again'
                   : 'Scan'}
               </button>
             </div>
 
-            {/* Search input */}
             <div className="mb-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by group ID or name..."
-                  value={channelSearchTerm}
-                  onChange={(e) => setChannelSearchTerm(e.target.value)}
-                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                />
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
+              <input
+                type="text"
+                placeholder="Search by group ID or name..."
+                value={channelSearchTerm}
+                onChange={(e) => setChannelSearchTerm(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                  text-[#FFD700] text-lg font-medium
+                  focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                  placeholder-[#8B6B43]
+                  transition-all duration-300
+                  hover:border-[#FFD700]/50
+                  focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+              />
             </div>
 
-            {/* Add Selected button - show only when channels are selected */}
             {selectedChannels.length > 0 && (
               <div className="mb-4">
                 <button
                   onClick={handleAddSelected}
-                  className="w-auto py-1.5 sm:py-2 px-4 sm:px-6 text-sm sm:text-base rounded-lg text-white font-medium bg-green-600 hover:bg-green-700 transition-colors"
+                  className="py-2 px-4 text-sm rounded-lg text-white font-medium
+                    bg-gradient-to-r from-green-500 to-green-600
+                    hover:shadow-[0_0_15px_rgba(34,197,94,0.3)]
+                    transform hover:scale-105
+                    transition-all duration-300"
                 >
-                  Add ({selectedChannels.length})
+                  Add Selected ({selectedChannels.length})
                 </button>
               </div>
             )}
 
-            {/* Table section */}
-            <div className="border border-gray-200 rounded-lg">
-              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto">
-                <div className="overflow-x-auto -mx-3 sm:mx-0">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          <div className="flex items-center">
+            <div className="border border-[#FFD700]/30 rounded-lg overflow-hidden">
+              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700] scrollbar-track-[#1A1A1A]">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-[#1A1A1A]">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-[#FFD700] text-[#FFD700] focus:ring-[#FFD700]
+                              transition-all duration-200 cursor-pointer"
+                            checked={
+                              channels.length > 0 &&
+                              selectedChannels.length === channels.length
+                            }
+                            onChange={(e) => handleSelectAll(e.target.checked)}
+                          />
+                          <span className="ml-2">Select all</span>
+                        </div>
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Group ID
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Group Name
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#FFD700]/20">
+                    {filteredChannels.length > 0 ? (
+                      filteredChannels.map((channel: Channel) => (
+                        <tr
+                          key={channel.id}
+                          className="hover:bg-[#1A1A1A] transition-colors duration-200"
+                        >
+                          <td className="px-4 py-3 text-sm">
                             <input
                               type="checkbox"
-                              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                              checked={
-                                channels.length > 0 &&
-                                selectedChannels.length === channels.length
-                              }
+                              className="w-4 h-4 rounded border-[#FFD700] text-[#FFD700] focus:ring-[#FFD700]
+                                transition-all duration-200 cursor-pointer"
+                              checked={selectedChannels.includes(channel.id)}
                               onChange={(e) =>
-                                handleSelectAll(e.target.checked)
+                                handleSelectChannel(
+                                  channel.id,
+                                  e.target.checked
+                                )
                               }
                             />
-                            <span className="ml-2">Select all</span>
-                          </div>
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Group ID
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Group Name
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {filteredChannels.length > 0 ? (
-                        filteredChannels.map(
-                          (channel: { id: string; title: string }) => (
-                            <tr key={channel.id} className="hover:bg-gray-50">
-                              <td className="px-4 py-3 text-sm">
-                                <input
-                                  type="checkbox"
-                                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                  checked={selectedChannels.includes(
-                                    channel.id
-                                  )}
-                                  onChange={(e) =>
-                                    handleSelectChannel(
-                                      channel.id,
-                                      e.target.checked
-                                    )
-                                  }
+                          </td>
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
+                            {channel.id}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
+                            {channel.title}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <button
+                              onClick={() =>
+                                handleAddGroup({ ...channel, type: 'group' })
+                              }
+                              className="p-2 rounded-md text-white
+                                bg-gradient-to-r from-[#FFD700] to-[#D4AF37]
+                                hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]
+                                transform hover:scale-110
+                                transition-all duration-300"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-5 h-5"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15"
                                 />
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-700">
-                                {channel.id}
-                              </td>
-                              <td className="px-4 py-3 text-sm text-gray-700">
-                                {channel.title}
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                <button
-                                  onClick={() =>
-                                    handleAddGroup({
-                                      ...channel,
-                                      type: 'group',
-                                    })
-                                  }
-                                  className="p-2 bg-green-500 hover:bg-green-600 rounded-md text-white transition-colors"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-5 h-5"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M12 4.5v15m7.5-7.5h-15"
-                                    />
-                                  </svg>
-                                </button>
-                              </td>
-                            </tr>
-                          )
-                        )
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan={4}
-                            className="px-4 py-8 text-center text-gray-500"
-                          >
-                            {channels.length > 0
-                              ? 'No matching channels found'
-                              : 'No channel found'}
+                              </svg>
+                            </button>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-4 py-8 text-center text-[#FFD700]"
+                        >
+                          {channels.length > 0
+                            ? 'No matching channels found'
+                            : 'No channel found'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
           {/* Groups Section */}
-          <div className="bg-white shadow-lg rounded-lg p-3 sm:p-6 animate__animated animate__fadeInRight">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
-              <h2 className="text-base sm:text-lg font-semibold text-gray-700">
-                Receiving groups
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text">
+                Receiving Groups
               </h2>
-              <div className="flex gap-2 w-full sm:w-auto">
-                {selectedReceivingGroups.length > 0 && (
-                  <button
-                    onClick={() => {
-                      setIsModalOpen(true);
-                      setSelectedGroup(null);
-                    }}
-                    className="w-auto py-1 px-3 text-sm rounded-lg text-white font-medium bg-red-600 hover:bg-red-700 transition-colors"
-                  >
-                    Delete ({selectedReceivingGroups.length})
-                  </button>
-                )}
-                <div className="w-full sm:w-64 relative">
-                  <input
-                    type="text"
-                    placeholder="Search groups..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
             </div>
 
-            <div className="border border-gray-200 rounded-lg">
-              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto">
-                <div className="overflow-x-auto -mx-3 sm:mx-0">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          <div className="flex items-center">
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Search groups..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                  text-[#FFD700] text-lg font-medium
+                  focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                  placeholder-[#8B6B43]
+                  transition-all duration-300
+                  hover:border-[#FFD700]/50
+                  focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+              />
+            </div>
+            {selectedReceivingGroups.length > 0 && (
+              <div className="mb-4">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setSelectedGroup(null);
+                  }}
+                  className="py-2 px-4 text-sm rounded-lg text-white font-medium
+                    bg-gradient-to-r from-red-600 to-red-700
+                    hover:shadow-[0_0_15px_rgba(220,38,38,0.3)]
+                    transform hover:scale-105
+                    transition-all duration-300"
+                >
+                  Delete Selected ({selectedReceivingGroups.length})
+                </button>
+              </div>
+            )}
+
+            <div className="border border-[#FFD700]/30 rounded-lg overflow-hidden">
+              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700] scrollbar-track-[#1A1A1A]">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-[#1A1A1A]">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-[#FFD700] text-[#FFD700] focus:ring-[#FFD700]
+                              transition-all duration-200 cursor-pointer"
+                            checked={
+                              filteredGroups.length > 0 &&
+                              selectedReceivingGroups.length ===
+                                filteredGroups.length
+                            }
+                            onChange={(e) =>
+                              handleSelectAllReceivingGroups(e.target.checked)
+                            }
+                          />
+                          <span className="ml-2">Select all</span>
+                        </div>
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Group ID
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Group Name
+                      </th>
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#FFD700]/20">
+                    {filteredGroups.length > 0 ? (
+                      filteredGroups.map((group) => (
+                        <tr
+                          key={group.rg_id}
+                          className="hover:bg-[#1A1A1A] transition-colors duration-200"
+                        >
+                          <td className="px-4 py-3 text-sm">
                             <input
                               type="checkbox"
-                              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                              checked={
-                                filteredGroups.length > 0 &&
-                                selectedReceivingGroups.length ===
-                                  filteredGroups.length
-                              }
+                              className="w-4 h-4 rounded border-[#FFD700] text-[#FFD700] focus:ring-[#FFD700]
+                                transition-all duration-200 cursor-pointer"
+                              checked={selectedReceivingGroups.includes(
+                                group.rg_id
+                              )}
                               onChange={(e) =>
-                                handleSelectAllReceivingGroups(e.target.checked)
+                                handleSelectReceivingGroup(
+                                  group.rg_id,
+                                  e.target.checked
+                                )
                               }
                             />
-                            <span className="ml-2">Select all</span>
-                          </div>
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Group ID
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Group Name
-                        </th>
-                        <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {filteredGroups.length > 0 ? (
-                        filteredGroups.map((group) => (
-                          <tr key={group.rg_id} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-sm">
-                              <input
-                                type="checkbox"
-                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                checked={selectedReceivingGroups.includes(
-                                  group.rg_id
-                                )}
-                                onChange={(e) =>
-                                  handleSelectReceivingGroup(
-                                    group.rg_id,
-                                    e.target.checked
-                                  )
-                                }
-                              />
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700">
-                              {group.rg_tid}
-                            </td>
-                            <td className="px-4 py-3 text-sm text-gray-700">
-                              {group.rg_name}
-                            </td>
-                            <td className="px-4 py-3 text-sm">
-                              <button
-                                onClick={() =>
-                                  openDeleteModal({
-                                    rg_id: group.rg_id,
-                                    userid: group.userid,
-                                    rg_name: group.rg_name,
-                                    rg_tid: group.rg_tid,
-                                  })
-                                }
-                                className="p-2 bg-red-500 hover:bg-red-600 rounded-md text-white transition-colors"
+                          </td>
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
+                            {group.rg_tid}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
+                            {group.rg_name}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <button
+                              onClick={() => openDeleteModal(group)}
+                              className="p-2 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all duration-300 transform hover:scale-110"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-5 h-5"
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="w-5 h-5"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                  />
-                                </svg>
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={4} className="px-4 py-8 text-center">
-                            <div className="flex flex-col items-center justify-center gap-2">
-                              <HiArchiveBoxArrowDown className="w-8 h-8 text-gray-400" />
-                              <p className="text-gray-500">
-                                {searchTerm
-                                  ? 'ไม่พบกลุ่มที่ค้นหา'
-                                  : groups.length > 0
-                                  ? 'ไม่พบข้อมูลที่ตรงกับเงื่อนไข'
-                                  : 'คุณยังไม่มีกลุ่มที่เพิ่มไว้ กรุณาเพิ่มกลุ่มใหม่'}
-                              </p>
-                            </div>
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                />
+                              </svg>
+                            </button>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-4 py-8 text-center text-[#FFD700]"
+                        >
+                          {searchTerm
+                            ? 'No matching groups found'
+                            : 'No groups available'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

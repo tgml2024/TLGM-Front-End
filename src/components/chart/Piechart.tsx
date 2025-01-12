@@ -16,9 +16,12 @@ const Piechart = ({ data }: PiechartProps) => {
     datasets: [
       {
         data: [data.total_success, data.total_fail],
-        backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-        borderColor: ['rgb(54, 162, 235)', 'rgb(255, 99, 132)'],
-        borderWidth: 1,
+        backgroundColor: ['rgba(57, 255, 20, 0.8)', 'rgba(255, 23, 68, 0.8)'],
+        borderColor: ['rgba(50, 205, 50, 1)', 'rgba(255, 0, 51, 1)'],
+        borderWidth: 2,
+        hoverBackgroundColor: ['rgba(57, 255, 20, 1)', 'rgba(255, 23, 68, 1)'],
+        hoverBorderColor: ['rgba(57, 255, 20, 1)', 'rgba(255, 23, 68, 1)'],
+        hoverBorderWidth: 3,
       },
     ],
   };
