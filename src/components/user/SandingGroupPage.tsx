@@ -178,95 +178,102 @@ const SandingGroupPage = () => {
   }, [deleteGroupMutation.isSuccess, deleteGroupMutation.isError]);
 
   return (
-    <div className="bg-gray-50 p-4 sm:p-6">
+    <div className="bg-white p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-center gap-3 mb-6 sm:mb-8 animate__animated animate__fadeIn">
-          <MdOutlineForwardToInbox className="w-8 h-8 text-blue-800" />
-          <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800">
-            Manage sending groups
-          </h1>
-        </div>
+        <h1 className="text-2xl sm:text-5xl font-bold text-center mb-6 sm:mb-12 flex items-center justify-center gap-3 animate__animated animate__fadeIn">
+          <MdOutlineForwardToInbox
+            className="text-[#FFD700] text-3xl sm:text-5xl animate-pulse 
+            drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+          />
+          <span
+            className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text 
+            drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]
+            hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]
+            transition-all duration-300
+            tracking-wider
+            font-extrabold
+            transform hover:scale-105
+            border-b-4 border-[#D4AF37]/20
+            pb-2"
+          >
+            Manage Sending Groups
+          </span>
+        </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 animate__animated animate__fadeInLeft">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-              <h2 className="text-lg font-semibold text-gray-700">
-                Scan channel
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+          {/* Channels Section */}
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text">
+                Scan Channel
               </h2>
               <button
                 onClick={() => fetchChannels()}
                 disabled={isFetchingChannels}
-                className={`w-full sm:w-auto py-2 px-6 rounded-lg text-white font-medium transition-colors ${
-                  isFetchingChannels
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }`}
+                className={`py-2 px-4 text-sm rounded-lg text-white font-medium transition-all duration-300 
+                  ${
+                    isFetchingChannels
+                      ? 'bg-gray-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37] hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transform hover:scale-105'
+                  }`}
               >
                 {isFetchingChannels
                   ? 'Loading...'
                   : channels.length > 0
-                  ? 'Scan again'
+                  ? 'Scan Again'
                   : 'Scan'}
               </button>
             </div>
 
-            {/* Add search box */}
             <div className="mb-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by group ID or name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
-                />
-                <svg
-                  className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
+              <input
+                type="text"
+                placeholder="Search by group ID or name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-[#1A1A1A] border-2 border-[#FFD700]/30
+                  text-[#FFD700] text-lg font-medium
+                  focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                  placeholder-[#8B6B43]
+                  transition-all duration-300
+                  hover:border-[#FFD700]/50
+                  focus:shadow-[0_0_10px_rgba(212,175,55,0.2)]"
+              />
             </div>
 
-            <div className="border border-gray-200 rounded-lg">
-              <div className="max-h-[450px] overflow-auto">
+            <div className="border border-[#FFD700]/30 rounded-lg overflow-hidden">
+              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700] scrollbar-track-[#1A1A1A]">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <tr className="bg-[#1A1A1A]">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Group ID
                       </th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Group Name
                       </th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-[#FFD700]/20">
                     {channels.length > 0 ? (
                       filteredChannels.map((channel: Channel) => (
-                        <tr key={channel.id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-700">
+                        <tr
+                          key={channel.id}
+                          className="hover:bg-[#1A1A1A] transition-colors duration-200"
+                        >
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
                             {channel.id}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-700">
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
                             {channel.title}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             <button
                               onClick={() => handleAddGroup(channel)}
-                              className="p-2 bg-green-500 hover:bg-green-600 rounded-md text-white transition-colors"
+                              className="p-2 bg-green-500 hover:bg-green-600 rounded-md text-white transition-all duration-300 transform hover:scale-110"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -290,9 +297,11 @@ const SandingGroupPage = () => {
                       <tr>
                         <td
                           colSpan={3}
-                          className="px-4 py-8 text-center text-gray-500"
+                          className="px-4 py-8 text-center text-[#FFD700]"
                         >
-                          No channel found
+                          {channels.length > 0
+                            ? 'No matching channels found'
+                            : 'No channel found'}
                         </td>
                       </tr>
                     )}
@@ -302,48 +311,53 @@ const SandingGroupPage = () => {
             </div>
           </div>
 
-          {/* Section for Sending Groups */}
-          <div className="bg-white shadow-lg rounded-lg p-4 sm:p-6 animate__animated animate__fadeInRight">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Sending groups
-            </h2>
+          {/* Sending Groups Section */}
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text">
+                Sending Groups
+              </h2>
+            </div>
 
-            <div className="border border-gray-200 rounded-lg">
-              <div className="max-h-[400px] overflow-auto">
+            <div className="border border-[#FFD700]/30 rounded-lg overflow-hidden">
+              <div className="max-h-[400px] sm:max-h-[500px] overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700] scrollbar-track-[#1A1A1A]">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <tr className="bg-[#1A1A1A]">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Group ID
                       </th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Group Name
                       </th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Message
                       </th>
-                      <th className="px-4 py-3 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-xs font-semibold text-[#FFD700] uppercase tracking-wider">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-[#FFD700]/20">
                     {groups.length > 0 ? (
                       groups.map((group) => (
-                        <tr key={group.sg_id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm text-gray-700">
+                        <tr
+                          key={group.sg_id}
+                          className="hover:bg-[#1A1A1A] transition-colors duration-200"
+                        >
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
                             {group.sg_tid}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-700">
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
                             {group.sg_name}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-700">
+                          <td className="px-4 py-3 text-sm text-[#FFD700]">
                             {group.message}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             <button
                               onClick={() => openDeleteModal(group)}
-                              className="p-2 bg-red-500 hover:bg-red-600 rounded-md text-white transition-colors"
+                              className="p-2 bg-red-600 hover:bg-red-700 rounded-md text-white transition-all duration-300 transform hover:scale-110"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -367,9 +381,9 @@ const SandingGroupPage = () => {
                       <tr>
                         <td
                           colSpan={4}
-                          className="px-4 py-8 text-center text-gray-500"
+                          className="px-4 py-8 text-center text-[#FFD700]"
                         >
-                          No group found
+                          No groups available
                         </td>
                       </tr>
                     )}
@@ -380,14 +394,14 @@ const SandingGroupPage = () => {
           </div>
         </div>
 
-        {/* Modal - Updated for better mobile experience */}
+        {/* Modal */}
         {isModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="fixed inset-0 bg-black/50"
               onClick={closeDeleteModal}
             />
-            <div className="relative bg-white w-full max-w-md rounded-lg shadow-xl animate__animated animate__zoomIn">
+            <div className="relative bg-[#0A0A0A] w-full max-w-[90%] sm:max-w-md rounded-3xl shadow-2xl animate__animated animate__zoomIn">
               <div className="p-4 sm:p-8">
                 <div className="text-center mb-6">
                   <svg
@@ -404,23 +418,23 @@ const SandingGroupPage = () => {
                     <line x1="15" y1="9" x2="9" y2="15" />
                     <line x1="9" y1="9" x2="15" y2="15" />
                   </svg>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-2">
+                  <h3 className="text-2xl font-bold text-[#FFD700] mt-6 mb-2">
                     Confirm Delete
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
+                  <p className="text-[#FFD700]/80">
                     Are you sure you want to delete group{' '}
-                    <span className="font-semibold text-gray-800 dark:text-gray-100">
+                    <span className="font-semibold text-[#FFD700]">
                       {selectedGroup?.sg_name}
-                    </span>{' '}
-                    ? <br />
+                    </span>
+                    ?<br />
                     This action cannot be undone
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-8">
                   <button
-                    className="w-full px-4 py-2.5 text-sm text-gray-700 bg-gray-100 
-                    rounded-2xl hover:bg-gray-200 transition-all duration-200 font-medium"
+                    className="w-full px-4 py-2.5 text-sm text-[#FFD700] bg-[#1A1A1A] 
+                    rounded-2xl hover:bg-[#2A2A2A] transition-all duration-200 font-medium"
                     onClick={closeDeleteModal}
                   >
                     Cancel

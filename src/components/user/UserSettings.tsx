@@ -73,12 +73,23 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
     }
   };
 
+  const handleCancel = () => {
+    fetchUserProfile();
+    toast.success('รีเซ็ตข้อมูลสำเร็จ');
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center animate__animated animate__fadeIn">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 animate__animated animate__pulse animate__infinite">
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFD700] mx-auto 
+            shadow-[0_0_15px_rgba(255,215,0,0.3)]"
+          ></div>
+          <p
+            className="mt-4 text-[#D4AF37] animate__animated animate__pulse animate__infinite
+            font-medium tracking-wider"
+          >
             Loading profile...
           </p>
         </div>
@@ -87,13 +98,21 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Top Navigation Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 animate__animated animate__fadeInDown">
+      <div
+        className="bg-gradient-to-r from-[#0A0A0A] to-[#1A1A1A] px-4 py-6 
+        shadow-[0_4px_15px_rgba(0,0,0,0.1)] animate__animated animate__fadeInDown"
+      >
         <div className="max-w-4xl mx-auto flex items-center">
           <div className="flex items-center gap-3">
-            <Cog6ToothIcon className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <div className="p-2 bg-black/40 rounded-lg">
+              <Cog6ToothIcon className="w-8 h-8 text-[#FFD700] transform hover:rotate-90 transition-transform duration-500" />
+            </div>
+            <h1
+              className="text-2xl font-semibold bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] 
+              text-transparent bg-clip-text tracking-wide"
+            >
               Profile Settings
             </h1>
           </div>
@@ -101,29 +120,38 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Personal Information Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden animate__animated animate__fadeInUp animate__delay-300ms">
-            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-              <h3 className="text-lg font-medium text-gray-900">
+          <div
+            className="bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A] rounded-2xl 
+            shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#FFD700]/20 
+            backdrop-blur-sm overflow-hidden animate__animated animate__fadeInUp animate__delay-300ms
+            hover:shadow-[0_8px_30px_rgba(212,175,55,0.1)] transition-shadow duration-500"
+          >
+            <div className="border-b border-[#FFD700]/20 bg-black/40 px-8 py-6">
+              <h3
+                className="text-xl font-semibold text-[#D4AF37] tracking-wide
+                flex items-center gap-2"
+              >
+                <UserCircleIcon className="w-6 h-6 text-[#FFD700]" />
                 Personal Information
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-[#8B6B43]">
                 Update your account details and settings
               </p>
             </div>
 
-            <div className="p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Name Field */}
-                <div className="space-y-2">
+                <div className="space-y-2 group">
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-[#D4AF37]"
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <UserCircleIcon className="w-5 h-5 text-gray-400" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <UserCircleIcon className="w-5 h-5 text-[#8B6B43] group-hover:text-[#FFD700] transition-colors duration-300" />
                       Full Name
                     </div>
                   </label>
@@ -133,19 +161,24 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full rounded-xl border-2 border-[#FFD700]/30 bg-black/40 px-4 py-3 
+                    text-[#FFD700] placeholder-[#8B6B43]
+                    focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                    transition-all duration-300 hover:border-[#FFD700]/50
+                    shadow-[0_2px_10px_rgba(0,0,0,0.1)]
+                    hover:shadow-[0_2px_15px_rgba(212,175,55,0.1)]"
                     placeholder="Enter your full name"
                   />
                 </div>
 
                 {/* Phone Field */}
-                <div className="space-y-2">
+                <div className="space-y-2 group">
                   <label
                     htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700"
+                    className="block text-sm font-medium text-[#D4AF37]"
                   >
-                    <div className="flex items-center gap-2 mb-1">
-                      <PhoneIcon className="w-5 h-5 text-gray-400" />
+                    <div className="flex items-center gap-2 mb-2">
+                      <PhoneIcon className="w-5 h-5 text-[#8B6B43] group-hover:text-[#FFD700] transition-colors duration-300" />
                       Phone Number
                     </div>
                   </label>
@@ -154,24 +187,30 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
                     defaultCountry="TH"
                     value={formData.phone}
                     onChange={handlePhoneChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    className="w-full rounded-xl border-2 border-[#FFD700]/30 bg-black/40 px-4 py-3 
+                    text-[#FFD700] placeholder-[#8B6B43]
+                    focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                    transition-all duration-300 hover:border-[#FFD700]/50
+                    shadow-[0_2px_10px_rgba(0,0,0,0.1)]
+                    hover:shadow-[0_2px_15px_rgba(212,175,55,0.1)]"
                   />
                 </div>
               </div>
 
               {/* API Credentials */}
-              <div className="mt-8">
-                <h4 className="text-base font-medium text-gray-900 mb-4">
+              <div className="mt-12">
+                <h4 className="text-lg font-semibold text-[#D4AF37] mb-6 flex items-center gap-2">
+                  <KeyIcon className="w-5 h-5 text-[#FFD700]" />
                   API Credentials
                 </h4>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="space-y-2 group">
                     <label
                       htmlFor="api_id"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-[#D4AF37]"
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <KeyIcon className="w-5 h-5 text-gray-400" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <HashtagIcon className="w-5 h-5 text-[#8B6B43] group-hover:text-[#FFD700] transition-colors duration-300" />
                         API ID
                       </div>
                     </label>
@@ -181,18 +220,23 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
                       name="api_id"
                       value={formData.api_id}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="w-full rounded-xl border-2 border-[#FFD700]/30 bg-black/40 px-4 py-3 
+                      text-[#FFD700] placeholder-[#8B6B43]
+                      focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                      transition-all duration-300 hover:border-[#FFD700]/50
+                      shadow-[0_2px_10px_rgba(0,0,0,0.1)]
+                      hover:shadow-[0_2px_15px_rgba(212,175,55,0.1)]"
                       placeholder="Enter your API ID"
                     />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 group">
                     <label
                       htmlFor="api_hash"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-sm font-medium text-[#D4AF37]"
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <HashtagIcon className="w-5 h-5 text-gray-400" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <KeyIcon className="w-5 h-5 text-[#8B6B43] group-hover:text-[#FFD700] transition-colors duration-300" />
                         API Hash
                       </div>
                     </label>
@@ -202,34 +246,47 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
                       name="api_hash"
                       value={formData.api_hash}
                       onChange={handleChange}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      className="w-full rounded-xl border-2 border-[#FFD700]/30 bg-black/40 px-4 py-3 
+                      text-[#FFD700] placeholder-[#8B6B43]
+                      focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:border-transparent 
+                      transition-all duration-300 hover:border-[#FFD700]/50
+                      shadow-[0_2px_10px_rgba(0,0,0,0.1)]
+                      hover:shadow-[0_2px_15px_rgba(212,175,55,0.1)]"
                       placeholder="Enter your API Hash"
                     />
                   </div>
                 </div>
               </div>
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                <div className="flex items-center gap-3 mb-2">
+
+              <div
+                className="mt-8 p-6 bg-black/40 rounded-xl border border-[#FFD700]/20
+                backdrop-blur-sm hover:shadow-[0_4px_20px_rgba(212,175,55,0.1)] transition-shadow duration-300"
+              >
+                <div className="flex items-center gap-3 mb-4">
                   <svg
-                    className="w-5 h-5 text-blue-500"
+                    className="w-6 h-6 text-[#FFD700]"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-7v4h4l-5 7z" />
                   </svg>
-                  <span className="text-sm font-medium text-blue-700">
+                  <span className="text-base font-semibold text-[#D4AF37]">
                     Get Your Telegram API Credentials
                   </span>
                 </div>
                 <a
                   href="https://my.telegram.org/auth"
                   target="_blank"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-blue-200 text-sm text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#0A0A0A] rounded-xl 
+                  border-2 border-[#FFD700]/30 text-sm font-medium text-[#FFD700] 
+                  hover:bg-[#1A1A1A] hover:border-[#FFD700]/50 
+                  transition-all duration-300 hover:shadow-[0_4px_15px_rgba(212,175,55,0.15)]
+                  transform hover:translate-y-[-2px]"
                   rel="noreferrer"
                 >
                   <span>Visit Telegram API Development Tools</span>
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -244,60 +301,64 @@ const UserSettings: React.FC<UserSettingsProps> = () => {
                 </a>
               </div>
             </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-4 pt-4 animate__animated animate__fadeInUp animate__delay-500ms">
-            <button
-              type="button"
-              className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-800 transition-colors duration-200"
-              disabled={isSubmitting}
-            >
-              ยกเลิก
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className={`
-                px-6 py-2.5 rounded-lg transition-all duration-200 
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                font-medium flex items-center gap-2 shadow-sm
-                ${
-                  isSubmitting
-                    ? 'bg-blue-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
-                }
-                text-white
-              `}
-            >
-              {isSubmitting ? (
-                <>
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>กำลังบันทึก...</span>
-                </>
-              ) : (
-                'บันทึกการเปลี่ยนแปลง'
-              )}
-            </button>
+            {/* Move buttons inside the form box */}
+            <div className="px-8 py-6 bg-black/40 border-t border-[#FFD700]/20">
+              <div className="flex items-center justify-end gap-4">
+                <button
+                  type="button"
+                  className="px-8 py-3 text-sm font-medium text-[#8B6B43] hover:text-[#D4AF37] 
+                  transition-colors duration-300 rounded-xl hover:bg-black/40"
+                  disabled={isSubmitting}
+                  onClick={handleCancel}
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`
+                    px-8 py-3 rounded-xl transition-all duration-300 
+                    focus:outline-none focus:ring-2 focus:ring-[#FFD700] focus:ring-offset-2 
+                    font-medium flex items-center gap-3 
+                    ${
+                      isSubmitting
+                        ? 'bg-[#8B6B43] cursor-not-allowed'
+                        : 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37] hover:shadow-[0_4px_20px_rgba(212,175,55,0.3)] transform hover:scale-105'
+                    }
+                    text-black
+                  `}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span>กำลังบันทึก...</span>
+                    </>
+                  ) : (
+                    'บันทึกการเปลี่ยนแปลง'
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>

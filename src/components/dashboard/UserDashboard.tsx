@@ -170,85 +170,101 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 bg-gray-100 min-h-screen">
+    <div className="p-4 md:p-6 bg-[#0A0A0A] min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto mb-6">
-        <div className="bg-white rounded-lg shadow-md p-3 md:p-4 hover:shadow-lg transition-shadow duration-300">
-          <div className="flex items-center gap-2 md:gap-3 mb-2">
-            <CogIcon className="h-5 w-5 md:h-6 md:w-6 text-purple-500" />
-            <h2 className="text-xs md:text-sm font-medium text-gray-700">
-              Total Forwards
-            </h2>
-          </div>
-          <div className="flex justify-center">
-            <div className="text-xl md:text-3xl font-bold text-purple-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats?.total_forwards || 0}
+        <div className="group">
+          <div
+            className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+            transform transition-all duration-300 group-hover:scale-105
+            group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+          >
+            <div className="flex items-center space-x-4">
+              <div
+                className="p-3 bg-gradient-to-br from-[#FFD700] to-[#D4AF37] rounded-lg
+                shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+              >
+                <CogIcon className="h-6 w-6 text-black" />
+              </div>
+              <div>
+                <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                  Total Forwards
+                </p>
+                <p className="text-[#FFD700] text-2xl font-bold tracking-wider">
+                  {totalStats?.total_forwards || 0}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-3 md:p-4 hover:shadow-lg transition-shadow duration-300">
-          <div className="flex items-center gap-2 md:gap-3 mb-2">
-            <CogIcon className="h-5 w-5 md:h-6 md:w-6 text-green-500" />
-            <h2 className="text-xs md:text-sm font-medium text-gray-700">
-              Total Success
-            </h2>
-          </div>
-          <div className="flex justify-center">
-            <div className="text-xl md:text-3xl font-bold text-green-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats?.total_success || 0}
+        <div className="group">
+          <div
+            className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+            transform transition-all duration-300 group-hover:scale-105
+            group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+          >
+            <div className="flex items-center space-x-4">
+              <div
+                className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-lg
+                shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+              >
+                <CogIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                  Total Success
+                </p>
+                <p className="text-green-500 text-2xl font-bold tracking-wider">
+                  {totalStats?.total_success || 0}
+                </p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-3 md:p-4 hover:shadow-lg transition-shadow duration-300">
-          <div className="flex items-center gap-2 md:gap-3 mb-2">
-            <CogIcon className="h-5 w-5 md:h-6 md:w-6 text-red-500" />
-            <h2 className="text-xs md:text-sm font-medium text-gray-700">
-              Total Fail
-            </h2>
-          </div>
-          <div className="flex justify-center">
-            <div className="text-xl md:text-3xl font-bold text-red-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats?.total_fail || 0}
+        <div className="group">
+          <div
+            className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+            transform transition-all duration-300 group-hover:scale-105
+            group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+          >
+            <div className="flex items-center space-x-4">
+              <div
+                className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-lg
+                shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+              >
+                <CogIcon className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                  Total Fail
+                </p>
+                <p className="text-red-500 text-2xl font-bold tracking-wider">
+                  {totalStats?.total_fail || 0}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto mb-4 md:mb-6 flex flex-col">
-        <div className="flex justify-center mb-4 md:mb-6">
-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 bg-white p-3 rounded-lg shadow-sm w-full md:w-auto">
-            <div className="flex gap-1 w-full md:w-auto">
-              <button
-                onClick={() => setViewMode('day')}
-                className={`flex-1 md:flex-none px-4 md:px-6 py-2 md:py-2.5 text-sm rounded-md font-medium transition-all duration-200 ${
-                  viewMode === 'day'
-                    ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Day
-              </button>
-              <button
-                onClick={() => setViewMode('month')}
-                className={`flex-1 md:flex-none px-4 md:px-6 py-2 md:py-2.5 text-sm rounded-md font-medium transition-all duration-200 ${
-                  viewMode === 'month'
-                    ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Month
-              </button>
-              <button
-                onClick={() => setViewMode('year')}
-                className={`flex-1 md:flex-none px-4 md:px-6 py-2 md:py-2.5 text-sm rounded-md font-medium transition-all duration-200 ${
-                  viewMode === 'year'
-                    ? 'bg-blue-500 text-white shadow-md hover:bg-blue-600'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Year
-              </button>
+      <div className="max-w-7xl mx-auto mb-6">
+        <div className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20">
+          <div className="flex flex-col md:flex-row items-center gap-4 justify-center">
+            <div className="flex gap-2">
+              {['day', 'month', 'year'].map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode as 'day' | 'month' | 'year')}
+                  className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-300
+                    ${
+                      viewMode === mode
+                        ? 'bg-gradient-to-r from-[#FFD700] to-[#D4AF37] text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                        : 'bg-[#2A2A2A] text-[#FFD700]/70 hover:bg-[#3A3A3A]'
+                    }`}
+                >
+                  {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                </button>
+              ))}
             </div>
-            <div className="hidden md:block h-8 w-px bg-gray-200"></div>
             <DatePicker
               selected={selectedDate}
               onChange={(date: Date | null) =>
@@ -257,18 +273,44 @@ const Dashboard: React.FC = () => {
               dateFormat={getDateFormat(viewMode)}
               showMonthYearPicker={viewMode === 'month'}
               showYearPicker={viewMode === 'year'}
-              className="w-full md:w-auto px-4 py-2.5 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              calendarClassName="shadow-lg rounded-lg"
-              popperClassName="z-10"
-              popperPlacement="bottom-start"
+              className="px-4 py-2.5 bg-[#2A2A2A] border-2 border-[#FFD700]/30
+                text-[#FFD700] rounded-lg focus:outline-none focus:ring-2 
+                focus:ring-[#FFD700] focus:border-transparent
+                hover:border-[#FFD700]/50"
             />
           </div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-4 md:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-            <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-100">
-              <h3 className="text-sm font-medium text-gray-600 mb-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="p-6 bg-[#0A0A0A] backdrop-blur-xl rounded-xl border border-[#FFD700]/20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 bg-white rounded-xl border border-[#FFD700]/20">
+              <h3 className="text-[#FFD700] font-medium mb-4 flex items-center gap-2">
+                <div
+                  className="p-2 bg-gradient-to-br from-[#FFD700] to-[#D4AF37] rounded-lg
+                  shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                >
+                  <svg
+                    className="w-4 h-4 text-black"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+                    />
+                  </svg>
+                </div>
                 Messages Distribution
               </h3>
               <div className="flex items-center justify-center h-[300px]">
@@ -279,8 +321,27 @@ const Dashboard: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="bg-white rounded-lg p-4 md:p-6 border border-gray-100">
-              <h3 className="text-sm font-medium text-gray-600 mb-4">
+
+            <div className="p-6 bg-white rounded-xl border border-[#FFD700]/20">
+              <h3 className="text-[#FFD700] font-medium mb-4 flex items-center gap-2">
+                <div
+                  className="p-2 bg-gradient-to-br from-[#FFD700] to-[#D4AF37] rounded-lg
+                  shadow-[0_0_15px_rgba(212,175,55,0.3)]"
+                >
+                  <svg
+                    className="w-4 h-4 text-black"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                </div>
                 Messages Comparison
               </h3>
               <div className="flex items-center justify-center h-[300px]">

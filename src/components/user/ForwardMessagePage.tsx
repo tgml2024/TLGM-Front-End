@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { MdForward } from 'react-icons/md';
 
 import {
   beginForwarding,
@@ -271,13 +270,46 @@ const ForwardMessage: React.FC = () => {
 
   // UI Components
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 sm:px-6">
-      <h1 className="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6 sm:mb-8 flex items-center justify-center gap-2 animate__animated animate__fadeIn">
-        <MdForward className="text-blue-600" />
-        Message Forwarding
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6">
+      <h1 className="text-2xl sm:text-5xl font-bold text-center mb-6 sm:mb-12 flex items-center justify-center gap-3 animate__animated animate__fadeIn">
+        <span
+          className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] text-transparent bg-clip-text 
+          drop-shadow-[0_0_10px_rgba(212,175,55,0.4)]
+          hover:drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]
+          transition-all duration-300
+          tracking-wider
+          font-extrabold
+          transform hover:scale-105
+          border-b-4 border-[#D4AF37]/20
+          hover:border-[#D4AF37]/40
+          pb-2
+          relative
+          after:content-['']
+          after:absolute
+          after:-bottom-1
+          after:left-0
+          after:w-full
+          after:h-[2px]
+          after:bg-gradient-to-r
+          after:from-transparent
+          after:via-[#D4AF37]
+          after:to-transparent
+          after:forward-shimmer
+          before:content-['']
+          before:absolute
+          before:-inset-1
+          before:bg-gradient-to-r
+          before:from-[#FFD700]/0
+          before:via-[#D4AF37]/10
+          before:to-[#B8860B]/0
+          before:forward-shine
+          before:rounded-lg"
+        >
+          Message Forwarding
+        </span>
       </h1>
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100 animate__animated animate__fadeInDown">
+        <div className="bg-[#0A0A0A] rounded-2xl p-6 shadow-lg border border-[#D4AF37]/20 animate__animated animate__fadeInDown">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div
@@ -285,7 +317,7 @@ const ForwardMessage: React.FC = () => {
                   forwardingState.status
                 )}`}
               />
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-[#D4AF37]">
                 Status: {forwardingState.status}
               </span>
             </div>
@@ -293,19 +325,19 @@ const ForwardMessage: React.FC = () => {
 
           {/* Last Message Section */}
           {lastMessage && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg animate__animated animate__fadeInUp">
-              <h4 className="text-sm font-medium text-gray-500 mb-2">
+            <div className="mt-4 p-4 bg-black rounded-lg border border-[#D4AF37]/10 animate__animated animate__fadeInUp">
+              <h4 className="text-sm font-medium text-[#C5A572] mb-2">
                 Last Message
               </h4>
-              <p className="text-gray-800">{lastMessage.text}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-[#D4AF37]">{lastMessage.text}</p>
+              <p className="text-xs text-[#8B6B43] mt-1">
                 {new Date(lastMessage.date).toLocaleString('th-TH')}
               </p>
             </div>
           )}
 
           {forwardingState.error && (
-            <span className="text-sm px-3 py-1 bg-red-50 text-red-600 rounded-full animate__animated animate__shakeX">
+            <span className="text-sm px-3 py-1 bg-red-900/20 text-red-500 rounded-full animate__animated animate__shakeX">
               {forwardingState.error}
             </span>
           )}
@@ -314,14 +346,18 @@ const ForwardMessage: React.FC = () => {
         {/* Control Panel */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Panel: Controls */}
-          <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100 animate__animated animate__fadeInLeft">
-            <h3 className="text-xl font-semibold mb-6 text-gray-800">
+          <div className="bg-[#0A0A0A] rounded-2xl p-6 shadow-lg border border-[#D4AF37]/20 animate__animated animate__fadeInLeft">
+            <h3 className="text-xl font-semibold mb-6 text-[#D4AF37]">
               Control
             </h3>
 
             {/* Interval Setting */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                className="block text-lg font-semibold text-[#FFD700] mb-2 
+                tracking-wide
+                drop-shadow-[0_0_3px_rgba(255,215,0,0.5)]"
+              >
                 Set Time (minutes)
               </label>
               <input
@@ -346,12 +382,27 @@ const ForwardMessage: React.FC = () => {
                   // ถ้าผ่านการตรวจสอบทั้งหมด
                   setIntervalError('');
                 }}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 rounded-lg 
+                  bg-[#1A1A1A]
+                  border-2 border-[#FFD700]
+                  text-[#FFD700] 
+                  text-lg
+                  font-semibold
+                  focus:ring-2 
+                  focus:ring-[#FFD700] 
+                  focus:border-transparent 
+                  placeholder-[#B8860B]
+                  transition-all
+                  duration-300
+                  hover:border-[#FFD700]/70
+                  focus:shadow-[0_0_12px_rgba(255,215,0,0.4)]"
                 disabled={forwardingState.status === 'RUNNING'}
                 placeholder="Enter minutes"
               />
               {intervalError && (
-                <p className="mt-1 text-sm text-red-600">{intervalError}</p>
+                <p className="mt-2 text-sm text-red-500 font-medium">
+                  {intervalError}
+                </p>
               )}
             </div>
 
@@ -509,15 +560,15 @@ const ForwardMessage: React.FC = () => {
           {/* Right Panel: Groups Info */}
           <div className="space-y-6 animate__animated animate__fadeInRight">
             {/* Source Group */}
-            <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100">
-              <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+            <div className="bg-[#0A0A0A] rounded-2xl p-6 shadow-lg border border-[#D4AF37]/20">
+              <h3 className="text-xl font-semibold mb-4 text-[#D4AF37] flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-7 h-7 text-blue-700"
+                  stroke="#D4AF37"
+                  className="w-7 h-7"
                 >
                   <path
                     strokeLinecap="round"
@@ -528,15 +579,15 @@ const ForwardMessage: React.FC = () => {
                 Sending Group
               </h3>
               <div className="space-y-3">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-500">Group ID</p>
-                  <p className="font-medium text-gray-800">
+                <div className="bg-black rounded-lg p-4 border border-[#D4AF37]/10">
+                  <p className="text-sm text-[#8B6B43]">Group ID</p>
+                  <p className="font-medium text-[#D4AF37]">
                     {sourceGroup?.sg_tid || '-'}
                   </p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-500">Group Name</p>
-                  <p className="font-medium text-gray-800">
+                <div className="bg-black rounded-lg p-4 border border-[#D4AF37]/10">
+                  <p className="text-sm text-[#8B6B43]">Group Name</p>
+                  <p className="font-medium text-[#D4AF37]">
                     {sourceGroup?.sg_name || '-'}
                   </p>
                 </div>
@@ -544,15 +595,15 @@ const ForwardMessage: React.FC = () => {
             </div>
 
             {/* Destination Groups */}
-            <div className="bg-white backdrop-blur-lg bg-opacity-90 rounded-2xl p-6 shadow-lg border border-gray-100">
-              <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center gap-2">
+            <div className="bg-[#0A0A0A] rounded-2xl p-6 shadow-lg border border-[#D4AF37]/20">
+              <h3 className="text-xl font-semibold mb-4 text-[#D4AF37] flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-7 h-7 text-yellow-500"
+                  stroke="#D4AF37"
+                  className="w-7 h-7"
                 >
                   <path
                     strokeLinecap="round"
@@ -562,25 +613,28 @@ const ForwardMessage: React.FC = () => {
                 </svg>
                 Receiving Group
               </h3>
-              <div className="overflow-hidden rounded-xl border border-gray-100">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div className="overflow-hidden rounded-xl border border-[#D4AF37]/20">
+                <table className="min-w-full divide-y divide-[#D4AF37]/10">
+                  <thead className="bg-black">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-[#8B6B43] uppercase">
                         Group Name
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-[#8B6B43] uppercase">
                         Group ID
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-[#0A0A0A] divide-y divide-[#D4AF37]/10">
                     {destinationGroups.map((group) => (
-                      <tr key={group.rg_id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                      <tr
+                        key={group.rg_id}
+                        className="hover:bg-black transition-colors"
+                      >
+                        <td className="px-4 py-3 text-sm text-[#D4AF37]">
                           {group.rg_name}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                        <td className="px-4 py-3 text-sm text-[#D4AF37]">
                           {group.rg_tid}
                         </td>
                       </tr>
