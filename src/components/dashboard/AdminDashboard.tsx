@@ -22,8 +22,6 @@ import Piechart from '../chart/Piechart';
 
 const Dashboard: React.FC = () => {
   const [activeForwarders, setActiveForwarders] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
   const [viewMode, setViewMode] = useState<'day' | 'month' | 'year'>('day');
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dashboardData, setDashboardData] = useState<
@@ -38,19 +36,23 @@ const Dashboard: React.FC = () => {
     total_success: 0,
     total_fail: 0,
   });
+  const [forwardersLoading, setForwardersLoading] = useState(true);
+  const [dashboardLoading, setDashboardLoading] = useState(true);
+  const [totalStatsLoading, setTotalStatsLoading] = useState(true);
+  const [forwardersError, setForwardersError] = useState(false);
+  const [dashboardError, setDashboardError] = useState(false);
+  const [totalStatsError, setTotalStatsError] = useState(false);
 
   const fetchData = async () => {
+    setForwardersLoading(true);
     try {
-      setLoading(true);
-
-      // Fetch active forwarders
       const forwardersResponse = await getActiveForwarders();
       setActiveForwarders(forwardersResponse.activeForwarders);
     } catch (err) {
-      toast.error('Failed to fetch dashboard data');
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setForwardersError(true);
+      toast.error('Failed to fetch active forwarders');
     } finally {
-      setLoading(false);
+      setForwardersLoading(false);
     }
   };
 
@@ -60,6 +62,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setDashboardLoading(true);
       try {
         let response;
         switch (viewMode) {
@@ -84,8 +87,12 @@ const Dashboard: React.FC = () => {
             );
         }
         setDashboardData(response);
+        setDashboardError(false);
       } catch (err) {
+        setDashboardError(true);
         toast.error('Failed to fetch dashboard data');
+      } finally {
+        setDashboardLoading(false);
       }
     };
 
@@ -94,11 +101,16 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchTotalStats = async () => {
+      setTotalStatsLoading(true);
       try {
         const response = await getDashboardTotal();
         setTotalStats(response.data.summary);
+        setTotalStatsError(false);
       } catch (err) {
+        setTotalStatsError(true);
         toast.error('Failed to fetch total statistics');
+      } finally {
+        setTotalStatsLoading(false);
       }
     };
 
@@ -154,18 +166,20 @@ const Dashboard: React.FC = () => {
     return totals;
   };
 
-  if (loading) {
+  const renderStatValue = (
+    value: number | string,
+    isLoading: boolean,
+    hasError: boolean
+  ) => {
+    if (isLoading) return 'Loading...';
+    if (hasError) return 'Error';
+    return value;
+  };
+
+  if (forwardersLoading && dashboardLoading && totalStatsLoading) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-500">
         Loading...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500">
-        Error: {error}
       </div>
     );
   }
@@ -182,7 +196,11 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="text-xl md:text-3xl font-bold text-blue-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {activeForwarders}
+              {renderStatValue(
+                activeForwarders,
+                forwardersLoading,
+                forwardersError
+              )}
             </div>
           </div>
         </div>
@@ -195,7 +213,11 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="text-xl md:text-3xl font-bold text-purple-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats.total_forwards}
+              {renderStatValue(
+                totalStats.total_forwards,
+                totalStatsLoading,
+                totalStatsError
+              )}
             </div>
           </div>
         </div>
@@ -208,7 +230,11 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="text-xl md:text-3xl font-bold text-green-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats.total_success}
+              {renderStatValue(
+                totalStats.total_success,
+                totalStatsLoading,
+                totalStatsError
+              )}
             </div>
           </div>
         </div>
@@ -221,7 +247,11 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="flex justify-center">
             <div className="text-xl md:text-3xl font-bold text-red-600 px-2 md:px-4 py-1 md:py-2 rounded-lg">
-              {totalStats.total_fail}
+              {renderStatValue(
+                totalStats.total_fail,
+                totalStatsLoading,
+                totalStatsError
+              )}
             </div>
           </div>
         </div>
@@ -282,17 +312,18 @@ const Dashboard: React.FC = () => {
               <h3 className="text-xs md:text-sm font-medium text-gray-600 mb-3 md:mb-4">
                 Success/Fail Distribution
               </h3>
-              <div className="flex items-center justify-center">
-                {dashboardData && <Piechart data={getDetails()} />}
-              </div>
+              {(() => {
+                if (dashboardLoading) return <div>Loading...</div>;
+                if (dashboardError) return <div>Error loading chart</div>;
+                if (dashboardData) return <Piechart data={getDetails()} />;
+                return null;
+              })()}
             </div>
             <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-100">
               <h3 className="text-xs md:text-sm font-medium text-gray-600 mb-3 md:mb-4">
                 Success/Fail Comparison
               </h3>
-              <div className="flex items-center justify-center">
-                {dashboardData && <Horizontal data={getDetails()} />}
-              </div>
+              {dashboardData && <Horizontal data={getDetails()} />}
             </div>
           </div>
           <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-100">
