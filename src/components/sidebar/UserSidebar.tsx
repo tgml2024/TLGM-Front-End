@@ -4,7 +4,7 @@ import {
   ArrowRightIcon,
   ArrowUturnRightIcon,
   Bars3Icon,
-  ChartBarIcon,
+  ChartPieIcon,
   CheckBadgeIcon,
   ChevronLeftIcon,
   Cog6ToothIcon,
@@ -28,7 +28,7 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: 'Home', icon: HomeIcon, path: '/user' },
-  { name: 'Dashboard', icon: ChartBarIcon, path: '/user/dashboard' },
+  { name: 'Dashboard', icon: ChartPieIcon, path: '/user/dashboard' },
   { name: 'Confirm Telegram', icon: CheckBadgeIcon, path: '/user/confirm' },
   { name: 'Sender Group', icon: ArrowRightIcon, path: '/user/sandinggroup' },
   { name: 'Target Group', icon: ArrowLeftIcon, path: '/user/resivegroup' },

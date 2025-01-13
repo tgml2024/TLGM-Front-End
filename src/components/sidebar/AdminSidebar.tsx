@@ -3,7 +3,7 @@ import 'animate.css';
 import {
   ArrowLeftStartOnRectangleIcon,
   Bars3Icon,
-  ChartBarIcon,
+  ChartPieIcon,
   Cog6ToothIcon,
   HomeIcon,
   UserGroupIcon,
@@ -26,7 +26,7 @@ const navigation: NavItem[] = [
   { name: 'Home', icon: HomeIcon, path: '/admin' },
   {
     name: 'Dashboard Range',
-    icon: ChartBarIcon,
+    icon: ChartPieIcon,
     path: '/admin/dashboardrange',
   },
   { name: 'Manage Users', icon: UserGroupIcon, path: '/admin/manageusers' },
