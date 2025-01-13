@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// Set axios to include credentials globally
+axios.defaults.withCredentials = true;
+
 const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL;
 
 interface ChangePasswordRequest {
@@ -20,7 +23,10 @@ export const ChangePassword = async (
   try {
     const response = await axios.post(
       `${API_URL}/api/v1/change-password`,
-      data
+      data,
+      {
+        withCredentials: true, // Explicitly set for this request
+      }
     );
     return response.data;
   } catch (error: any) {
