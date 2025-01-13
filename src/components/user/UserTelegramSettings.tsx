@@ -365,7 +365,6 @@ const UserTelegramSettings = () => {
         >
           {/* Animated background effects */}
           <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/10 to-transparent"></div>
             <div className="absolute -top-32 -right-32 w-64 h-64 bg-[#FFD700]/10 rounded-full blur-3xl animate-pulse"></div>
             <div
