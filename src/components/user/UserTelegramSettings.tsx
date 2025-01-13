@@ -406,7 +406,35 @@ const UserTelegramSettings = () => {
             </div>
 
             {/* API Info Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {/* Telegram Box */}
+              <div className="group">
+                <div
+                  className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
+                  transform transition-all duration-300 group-hover:scale-105
+                  group-hover:shadow-[0_0_25px_rgba(212,175,55,0.15)]"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div
+                      className="p-3 bg-gradient-to-br from-[#0088cc] to-[#0099ff] rounded-lg
+                      shadow-[0_0_15px_rgba(0,136,204,0.3)]"
+                    >
+                      <FaTelegram className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-[#FFD700]/70 text-sm font-medium mb-1">
+                        Telegram
+                      </p>
+                      <p className="text-[#0088cc] text-lg font-bold tracking-wider flex items-center gap-2">
+                        <span className="w-2 h-2 bg-[#0088cc] rounded-full animate-pulse"></span>
+                        {userProfile?.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* API ID Box */}
               <div className="group">
                 <div
                   className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
@@ -444,6 +472,7 @@ const UserTelegramSettings = () => {
                 </div>
               </div>
 
+              {/* Connection Status Box */}
               <div className="group">
                 <div
                   className="p-6 bg-[#1A1A1A]/80 backdrop-blur-xl rounded-xl border border-[#FFD700]/20
