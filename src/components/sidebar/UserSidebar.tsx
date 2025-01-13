@@ -379,7 +379,7 @@ const UserSidebar = () => {
                           text-gray-200
                           transition-all duration-300"
                         onClick={() => {
-                          router.push('/user/change-password');
+                          router.push('/user/changepassword');
                           setShowProfileDropdown(false);
                         }}
                       >
