@@ -26,7 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
     mutationFn: login,
     onSuccess: (data) => {
       toast.dismiss();
-      toast.success('เข้าสู่ระบบสำเร็จ');
+      toast.success('login success');
       sessionStorage.setItem('userData', JSON.stringify(data.user));
       if (data.user.role === 0) {
         router.replace('/user');
@@ -34,14 +34,14 @@ const LoginForm: React.FC<LoginFormProps> = () => {
         router.replace('/admin');
       }
     },
-    onError: () => {
+    onError: (error: any) => {
       toast.dismiss();
-      toast.error('เข้าสู่ระบบล้มเหลว');
+      toast.error(error.response?.data?.message || 'login failed');
     },
   });
 
   const onSubmit = handleSubmit((data) => {
-    toast.loading('กำลังเข้าสู่ระบบ...');
+    toast.loading('logging in...');
     loginMutation.mutate(data);
   });
 

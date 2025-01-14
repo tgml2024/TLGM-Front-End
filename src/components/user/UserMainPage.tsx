@@ -29,8 +29,8 @@ const UserMainPage = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 min-h-screen bg-white">
-      <div className="h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="p-4 md:p-6 bg-white">
+      <div className="h-[70vh] flex items-center justify-center relative overflow-hidden">
         {/* Main Content */}
         <div className="relative z-10 text-center">
           <div className="relative space-y-4">

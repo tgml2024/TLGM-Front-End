@@ -3,6 +3,8 @@ const pageTitles: { [key: string]: string } = {
   '/login': 'TLGM Message |  Login',
   '/admin': 'TLGM Message | Admin Homepage',
   '/admin/dashboard': 'TLGM Message | Admin Dashboard',
+  '/admin/dashboardrange': 'TLGM Message | Admin Dashboard',
+  '/admin/manageusers': 'TLGM Message | Admin Manage Users',
   '/admin/confirm': 'TLGM Message | Admin Confirm',
   '/admin/settings': 'TLGM Message | Admin Settings',
   '/user': 'TLGM Message | User Homepage',
@@ -13,6 +15,7 @@ const pageTitles: { [key: string]: string } = {
   '/user/sandinggroup': 'TLGM Message | Send Group',
   '/user/resivegroup': 'TLGM Message | Resive Group',
   '/user/forward': 'TLGM Message | Forward Message',
+  '/user/sandmessage': 'TLGM Message | Send Message',
 };
 
 export default pageTitles;

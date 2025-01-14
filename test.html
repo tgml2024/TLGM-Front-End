@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .carousel-container {
+      width: 576px;
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+      margin: 20px auto;
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .carousel {
+      display: flex;
+      width: max-content;
+      gap: 16px;
+    }
+
+    .card {
+      width: 272px;
+      height: 180px;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      transition: transform 1s ease;
+    }
+
+    .card:nth-child(1) {
+      left: 0;
+      animation: slideOutRight 3s infinite;
+      z-index: 2; /* เพิ่ม z-index ให้อยู่ด้านบน */
+    }
+
+    .card:nth-child(2) {
+      left: 288px;
+      animation: slideLeft 3s infinite;
+      z-index: 1;
+    }
+
+    .card:nth-child(3) {
+      left: 576px;
+      animation: slideLeft 3s infinite;
+      z-index: 1;
+    }
+
+    @keyframes slideOutRight {
+      0%, 80% {
+        transform: translateX(0);
+      }
+      90%, 100% {
+        transform: translateX(200%);
+      }
+    }
+
+    @keyframes slideLeft {
+      0%, 80% {
+        transform: translateX(0);
+      }
+      90%, 100% {
+        transform: translateX(-288px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container">
+    <div class="carousel">
+      <div class="card">Card 1</div>
+      <div class="card">Card 2</div>
+      <div class="card">Card 3</div>
+    </div>
+  </div>
+</body>
+</html>
+</body>
+</html>

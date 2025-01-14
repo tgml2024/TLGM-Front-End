@@ -59,6 +59,7 @@ const AdminSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [iconAnimations, setIconAnimations] = useState<IconAnimations>({});
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const handleLogout = async () => {
     setShowLogoutModal(true);
@@ -137,14 +138,19 @@ const AdminSidebar = () => {
       {/* Top Navigation Bar */}
       <div
         className="fixed top-0 left-0 right-0 h-16 
-        bg-gradient-to-r from-[#0A0A0A] via-[#111111] to-[#0A0A0A]
+        bg-[#0A0A0A]
+        background: #0A0A0A;  /* Fallback color */
+        background: -webkit-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: -moz-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: -o-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
         border-b border-[#D4AF37]/20 z-40 flex items-center px-4"
       >
         {/* Menu Toggle Button */}
         <button
           className="sm:hidden p-2 rounded-lg 
-          text-gray-200 hover:text-[#D4AF37]
-          hover:bg-[#1A1A1A] transition-all duration-300"
+          text-gray-300 hover:text-[#B38B59]
+          hover:bg-[#1a1a1a] transition-all duration-300"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? (
@@ -286,11 +292,17 @@ const AdminSidebar = () => {
         fixed sm:static inset-y-0 left-0 z-30
         transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         sm:translate-x-0 transition-all duration-300 ease-in-out
-        bg-gradient-to-b from-[#0A0A0A] via-[#111111] to-[#0A0A0A]
-        text-gray-200 
+        bg-[#0A0A0A]
+        background: #0A0A0A;  /* Fallback color */
+        background: -webkit-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: -moz-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: -o-linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        background: linear-gradient(to right, #0A0A0A, #111111, #0A0A0A);
+        text-gray-200
         ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col
         border-r border-[#D4AF37]/20
-        mt-16 bottom-0`}
+        mt-16 bottom-0
+      `}
       >
         <nav className="h-[calc(100vh-4rem)] flex-1 py-4">
           <div className="h-full overflow-hidden">
@@ -301,26 +313,62 @@ const AdminSidebar = () => {
                   setIsMobileMenuOpen(false);
                   router.push(item.path);
                 }}
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => {
+                  setHoveredItem(null);
+                  setIconAnimations((prev) => ({
+                    ...prev,
+                    [item.name]: '',
+                  }));
+                }}
                 className={`
-                  flex items-center px-4 py-2 text-sm
+                  flex items-center px-4 py-2 text-sm group
+                  relative overflow-hidden
                   ${
                     router.pathname === item.path
-                      ? 'bg-gray-100 dark:bg-gray-700 text-indigo-600 dark:text-indigo-400 border-l-4 border-indigo-600'
-                      : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'bg-[#1A1A1A] text-[#D4AF37] border-l-4 border-[#D4AF37]'
+                      : 'text-gray-200 hover:text-[#D4AF37]'
                   }
-                  cursor-pointer transition-colors duration-200
+                  cursor-pointer transition-all duration-200
+                  hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]
                 `}
               >
+                {/* Hover background gradient */}
+                <div
+                  className={`absolute inset-0 opacity-0 group-hover:opacity-100
+                  bg-gradient-to-r from-[#D4AF37]/10 via-[#B38B59]/20 to-[#8B6B43]/10
+                  transition-opacity duration-300 ease-in-out
+                  ${router.pathname === item.path ? 'opacity-100' : ''}
+                `}
+                />
+
+                {/* Icon */}
                 <item.icon
                   className={`
-                    w-5 h-5 mr-3 animate__animated ${
-                      iconAnimations[item.name]
-                    } animate__infinite animate__slower
-                    group-hover:animate__headShake
+                    w-5 h-5 mr-3
+                    ${
+                      hoveredItem === item.name
+                        ? `animate__animated ${iconAnimations[item.name]}`
+                        : ''
+                    }
+                    ${
+                      hoveredItem === item.name
+                        ? 'animate__infinite animate__slower'
+                        : ''
+                    }
+                    group-hover:text-[#D4AF37]
+                    ${
+                      router.pathname === item.path
+                        ? 'text-[#D4AF37]'
+                        : 'text-[#C5A572]'
+                    }
                   `}
                   aria-hidden="true"
                 />
-                {!isCollapsed && item.name}
+
+                <span className="relative z-10">
+                  {!isCollapsed && item.name}
+                </span>
               </div>
             ))}
           </div>

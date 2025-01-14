@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 bg-[#0A0A0A] min-h-screen">
+    <div className="p-4 md:p-6 bg-[#0A0A0A] min-h-screen rounded-xl border-4 border-[#FFD700] shadow-[0_0_25px_rgba(212,175,55,0.5)]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto mb-6">
         <div className="group">
           <div

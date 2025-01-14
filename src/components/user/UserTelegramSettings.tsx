@@ -266,7 +266,7 @@ const UserTelegramSettings = () => {
     ];
 
     return (
-      <div className="mb-8">
+      <div className="mb-8 ">
         <div className="flex justify-center items-center">
           {steps.map((s, index) => (
             <React.Fragment key={index}>
@@ -548,7 +548,7 @@ const UserTelegramSettings = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="bg-white p-4 sm:p-8">
+      <div className="bg-white p-4 sm:p-8 ">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl sm:text-5xl font-bold text-center mb-6 sm:mb-12 flex items-center justify-center gap-3 animate__animated animate__fadeIn">
             <FaTelegram
@@ -570,7 +570,7 @@ const UserTelegramSettings = () => {
             </span>
           </h2>
 
-          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20">
+          <div className="bg-[#0A0A0A] shadow-lg rounded-lg p-4 sm:p-6 border border-[#FFD700]/20 rounded-xl border-4 border-[#FFD700] shadow-[0_0_25px_rgba(212,175,55,0.5)]">
             {/* Status Section */}
             {userProfile?.telegram_auth === 1 ? (
               renderWorkingStatus()
