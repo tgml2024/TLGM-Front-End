@@ -128,7 +128,7 @@ export const beginForwarding = async (
         userId: data.userId,
         sourceChatId: data.sourceChatId,
         destinationChatIds: data.destinationChatIds,
-        forward_interval: data.forward_interval || 5,
+        forward_interval: data.forward_interval || 60,
       }
     );
     return response.data;
