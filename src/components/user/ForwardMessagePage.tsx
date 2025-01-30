@@ -58,6 +58,7 @@ const ForwardMessage: React.FC = () => {
   const [intervalError, setIntervalError] = useState<string>('');
   const [isAnimating, setIsAnimating] = useState(false);
   const [isStopAnimating, setIsStopAnimating] = useState(false);
+  const isTimeEditable = false;
 
   // 1. Initialize client
   useEffect(() => {
@@ -83,7 +84,7 @@ const ForwardMessage: React.FC = () => {
         }));
 
         setInputValue(
-          forwardingStatus.currentForward.forward_interval?.toString() || '10'
+          forwardingStatus.currentForward.forward_interval?.toString() || '60'
         );
 
         if (forwardingStatus.messageInfo) {
@@ -258,7 +259,7 @@ const ForwardMessage: React.FC = () => {
       // ตรวจสอบครั้งแรกทันที
       checkStatus();
       // ตั้งเวลาตรวจสอบทุก 5 วนาท
-      statusCheckInterval = window.setInterval(checkStatus, 5000);
+      statusCheckInterval = window.setInterval(checkStatus, 10000);
     }
 
     return () => {
@@ -382,7 +383,7 @@ const ForwardMessage: React.FC = () => {
                   // ถ้าผ่านการตรวจสอบทั้งหมด
                   setIntervalError('');
                 }}
-                className="w-full px-4 py-3 rounded-lg 
+                className={`w-full px-4 py-3 rounded-lg 
                   bg-[#1A1A1A]
                   border-2 border-[#FFD700]
                   text-[#FFD700] 
@@ -395,8 +396,11 @@ const ForwardMessage: React.FC = () => {
                   transition-all
                   duration-300
                   hover:border-[#FFD700]/70
-                  focus:shadow-[0_0_12px_rgba(255,215,0,0.4)]"
-                disabled={forwardingState.status === 'RUNNING'}
+                  focus:shadow-[0_0_12px_rgba(255,215,0,0.4)]
+                  ${!isTimeEditable && 'opacity-50 cursor-not-allowed'}`}
+                disabled={
+                  forwardingState.status === 'RUNNING' || !isTimeEditable
+                }
                 placeholder="Enter minutes"
               />
               {intervalError && (
