@@ -1,15 +1,32 @@
+import { motion, useInView } from 'framer-motion';
 import HomeLayout from 'layout/HomeLayout';
 import Link from 'next/link';
-import React from 'react';
+import React, { useRef } from 'react';
 
 const Home = () => {
+  const previewRef = useRef(null);
+  const isPreviewInView = useInView(previewRef, {
+    once: true,
+    margin: '-100px',
+  });
+
   return (
     <HomeLayout>
       <div className="w-full bg-[#0A0A0A]">
         {/* Welcome Section - Full Height */}
-        <section className="min-h-screen w-full flex flex-col justify-center items-center p-4 relative">
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="min-h-screen w-full flex flex-col justify-center items-center p-4 relative"
+        >
           {/* Logo with Animation */}
-          <div className="mb-12 animate-float relative group w-[300px] h-[120px] md:w-[400px] md:h-[160px]">
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mb-12 relative group w-[300px] h-[120px] md:w-[400px] md:h-[160px]"
+          >
             {/* Outer glow ring */}
             <div
               className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-yellow-500/30 to-red-500/30 
@@ -35,10 +52,15 @@ const Home = () => {
                 group-hover:rotate-[360deg] transition-all duration-[3000ms]
                 rounded-xl"
             />
-          </div>
+          </motion.div>
 
           {/* Hero Section */}
-          <div className="text-center mb-12 animate__animated animate__fadeIn">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="text-center mb-12"
+          >
             <h1 className="text-5xl md:text-7xl font-bold mb-6 relative group">
               <span
                 className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] 
@@ -56,9 +78,14 @@ const Home = () => {
             <p className="text-xl md:text-2xl text-gray-400 mb-8 hover:text-gray-300 transition-colors">
               Auto Forward and Send Message
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="flex justify-center"
+          >
             <Link
               href="/login"
               className="text-white hover:text-gray-300 bg-blue-600 px-6 py-3 rounded-md
@@ -66,10 +93,15 @@ const Home = () => {
             >
               Launch App
             </Link>
-          </div>
+          </motion.div>
 
           {/* Scroll Indicator */}
-          <div className="absolute bottom-8 animate-bounce">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1 }}
+            className="absolute bottom-8 animate-bounce"
+          >
             <svg
               className="w-6 h-6 text-gray-400"
               fill="none"
@@ -81,21 +113,45 @@ const Home = () => {
             >
               <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
         {/* Preview Section - Full Height */}
-        <section className="min-h-screen w-full flex flex-col justify-center items-center p-4 relative">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
+        <motion.section
+          ref={previewRef}
+          initial={{ opacity: 0, y: 50 }}
+          animate={
+            isPreviewInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
+          }
+          transition={{ duration: 0.8 }}
+          className="min-h-screen w-full flex flex-col justify-center items-center p-4 relative"
+        >
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={
+              isPreviewInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+            }
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold mb-12 text-center"
+          >
             <span
               className="bg-gradient-to-r from-[#FFD700] via-[#D4AF37] to-[#B8860B] 
               text-transparent bg-clip-text"
             >
               See It In Action
             </span>
-          </h2>
+          </motion.h2>
 
-          <div className="w-full max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={
+              isPreviewInView
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.9 }
+            }
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="w-full max-w-4xl mx-auto"
+          >
             <div className="relative rounded-lg overflow-hidden shadow-2xl group">
               <img
                 src="/images/preview.gif"
@@ -109,11 +165,16 @@ const Home = () => {
                 transition-colors duration-300"
               ></div>
             </div>
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
         {/* Footer Section */}
-        <footer className="w-full bg-[#0A0A0A] border-t border-gray-800">
+        <motion.footer
+          initial={{ opacity: 0 }}
+          animate={isPreviewInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="w-full bg-[#0A0A0A] border-t border-gray-800"
+        >
           <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Company Info */}
@@ -242,7 +303,7 @@ const Home = () => {
               </p>
             </div>
           </div>
-        </footer>
+        </motion.footer>
 
         {/* Decorative Elements - Now spans all sections */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">

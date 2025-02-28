@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import React from 'react';
 import { FaFacebook, FaGithub, FaInstagram } from 'react-icons/fa';
@@ -43,7 +44,12 @@ const About = () => {
       <Navbar />
       <div className="min-h-screen bg-black">
         {/* System Description */}
-        <section className="py-16 bg-gray-900">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="py-16 bg-gray-900"
+        >
           <div className="container mx-auto px-4">
             <h1 className="text-4xl font-bold text-center mb-8 text-yellow-500">
               Automated Telegram Messaging System
@@ -54,18 +60,26 @@ const About = () => {
               workflow and manage your messages efficiently.
             </p>
           </div>
-        </section>
+        </motion.section>
 
         {/* Team Members */}
-        <section className="py-16">
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="py-16"
+        >
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12 text-yellow-500">
               Our Team
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {teamMembers.map((member, index) => (
-                <div
+                <motion.div
                   key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 * (index + 1) }}
                   className="bg-gray-900 rounded-lg shadow-lg p-8 text-center border border-yellow-500/30 hover:border-yellow-500 transition-colors duration-300"
                 >
                   <div className="mb-6 relative w-40 h-40 mx-auto">
@@ -106,11 +120,11 @@ const About = () => {
                       <FaInstagram size={24} />
                     </a>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
-        </section>
+        </motion.section>
       </div>
     </>
   );
