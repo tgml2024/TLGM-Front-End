@@ -12,6 +12,7 @@ import axios from 'axios';
 import { AuthProvider } from 'context/AuthContext';
 import AdminLayout from 'layout/AdminLayout';
 import AuthLayout from 'layout/AuthLayout';
+import HomeLayout from 'layout/HomeLayout';
 import Layout from 'layout/Layout';
 import UserLayout from 'layout/UserLayout';
 import { AppProps } from 'next/app';
@@ -31,6 +32,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   const getLayoutComponent = () => {
     switch (true) {
       case router.pathname === '/' || router.pathname === '/landing':
+        return Layout;
+      case router.pathname === '/home':
+        return HomeLayout;
+      case router.pathname === '/landing':
         return Layout;
       case router.pathname.startsWith('/login'):
         return AuthLayout;

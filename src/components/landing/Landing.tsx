@@ -9,8 +9,8 @@ const LandingPage: React.FC<LandingPageProps> = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/login');
-    }, 2000);
+      router.push('/homepage');
+    }, 1000);
 
     return () => {
       clearTimeout(timer);

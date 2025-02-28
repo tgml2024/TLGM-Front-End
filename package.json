@@ -12,6 +12,7 @@
     "format": "next lint --fix && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@heroicons/react": "^2.2.0",
