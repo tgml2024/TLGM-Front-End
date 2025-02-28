@@ -13,9 +13,9 @@ const UserMainPage = () => {
   const [showTutorial, setShowTutorial] = useState(false);
 
   const tutorials = {
-    th: 'https://www.youtube.com/watch?v=ez-ZmRwKXBo',
-    en: 'https://www.youtube.com/watch?v=2XWUMhJ28Cc',
-    cn: 'https://www.youtube.com/watch?v=Re8JSpZIgtc',
+    th: 'https://www.youtube.com/watch?v=wxdenvOloqI',
+    en: 'https://www.youtube.com/watch?v=wxdenvOloqI',
+    cn: 'https://www.youtube.com/watch?v=wxdenvOloqI',
   };
 
   if (isLoading) {
