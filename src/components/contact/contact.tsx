@@ -1,5 +1,6 @@
 // src/components/contact/contact.tsx
 import emailjs from '@emailjs/browser';
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
 
@@ -45,18 +46,28 @@ const Contact = () => {
       <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
             <h1 className="text-4xl font-bold text-gold-500 mb-4">
               Contact Us
             </h1>
             <p className="text-lg text-gray-300">
               Get in touch with us for any questions or concerns
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Contact Information */}
-            <div className="bg-gray-900 rounded-lg shadow-lg p-8 border border-gold-500">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-gray-900 rounded-lg shadow-lg p-8 border border-gold-500"
+            >
               <h2 className="text-2xl font-semibold text-gold-500 mb-6">
                 Contact Information
               </h2>
@@ -88,10 +99,15 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Contact Form */}
-            <div className="bg-gray-900 rounded-lg shadow-lg p-8 border border-gold-500">
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-gray-900 rounded-lg shadow-lg p-8 border border-gold-500"
+            >
               <h2 className="text-2xl font-semibold text-gold-500 mb-6">
                 Send us a Message
               </h2>
@@ -187,7 +203,7 @@ const Contact = () => {
                   </div>
                 )}
               </form>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
