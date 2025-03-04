@@ -33,6 +33,8 @@ class MyDocument extends Document {
           <meta property="og:url" content="https://tlgm.xyz" />
           <meta property="og:image" content="/images/og-image.webp" />
           <meta property="og:type" content="website" />
+          <meta name="robots" content="index, follow" />
+          <meta name="googlebot" content="index, follow" />
         </Head>
         <body>
           <Main />
